@@ -18,6 +18,10 @@ export function loginWithEmail(params: LoginWithEmailParams): Promise<any> {
   return tuya.loginWithEmail(params);
 }
 
+export function loginWithUid(params: LoginWithUidParams): Promise<any> {
+  return tuya.loginWithUid(params);
+}
+
 export function getEmailValidateCode(
   params: GetEmailValidateCodeParams
 ): Promise<any> {
@@ -71,6 +75,12 @@ export type GetEmailValidateCodeParams = {
 
 export type LoginWithEmailParams = {
   email: string;
+  password: string;
+  countryCode: string;
+};
+
+export type LoginWithUidParams = {
+  uid: string;
   password: string;
   countryCode: string;
 };

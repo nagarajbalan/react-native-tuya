@@ -26,9 +26,7 @@
     "react-native": "^0.61.5"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
+    "hooks": {}
   },
   "prettier": {
     "singleQuote": true,
