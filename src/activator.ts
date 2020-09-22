@@ -15,10 +15,21 @@ export type InitActivatorParams = {
   type: 'TY_EZ' | 'TY_AP' | 'TY_QR';
 };
 
+export type InitGwActivatorParams = {
+  homeId: number;
+  time: number;
+};
+
 export function initActivator(
   params: InitActivatorParams
 ): Promise<DeviceDetailResponse> {
   return tuya.initActivator(params);
+}
+
+export function newGwActivator(
+  params: InitGwActivatorParams
+): Promise<DeviceDetailResponse> {
+  return tuya.newGwActivator(params);
 }
 
 export function stopConfig() {

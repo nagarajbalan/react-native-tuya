@@ -103,6 +103,32 @@ RCT_EXPORT_METHOD(newGwSubDevActivator:(NSDictionary *)params resolver:(RCTPromi
   
 }
 
+// Zigbee wired gateway activation
+RCT_EXPORT_METHOD(newGwActivator:(NSDictionary *)params resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter) {
+  RCTLogInfo(@"Inside Native method");
+//  NSString *deviceId = params[kTuyaRNActivatorModuleDeviceId];
+  NSNumber * homeId = params[kTuyaRNActivatorModuleHomeId];
+  NSNumber *time = params[kTuyaRNActivatorModuleOverTime];
+  
+  if (activatorInstance == nil) {
+    activatorInstance = [TuyaRNActivatorModule new];
+    RCTLogInfo(@"new activator instance");
+  }
+  
+  [TuyaSmartActivator sharedInstance].delegate = activatorInstance;
+  activatorInstance.promiseResolveBlock = resolver;
+  activatorInstance.promiseRejectBlock = rejecter;
+  
+  [[TuyaSmartActivator sharedInstance] getTokenWithHomeId:[homeId longLongValue] success:^(NSString *result) {
+    NSLog(@"TOKEN -- %@",result);
+    [[TuyaSmartActivator sharedInstance] startConfigWiFiWithToken:result timeout:time.doubleValue];
+    
+  } failure:^(NSError *error) {
+    NSLog(@"ERROR GETTING TOKEN %@",error.localizedDescription);
+    RCTLogInfo(@"ERROR GETTING TOKEN %@",error.localizedDescription);
+  }];
+}
+
 RCT_EXPORT_METHOD(stopNewGwSubDevActivatorConfig:(NSDictionary *)params resolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter) {
   
   NSString *deviceId = params[kTuyaRNActivatorModuleDeviceId];
