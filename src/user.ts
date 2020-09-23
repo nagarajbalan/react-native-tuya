@@ -19,6 +19,7 @@ export function loginWithEmail(params: LoginWithEmailParams): Promise<any> {
 }
 
 export function loginWithUid(params: LoginWithUidParams): Promise<any> {
+  console.log('loginWithUid', params);
   return tuya.loginWithUid(params);
 }
 
