@@ -12,6 +12,7 @@
 #import <TuyaSmartDeviceKit/TuyaSmartDeviceKit.h>
 #import "TuyaRNUtils+Network.h"
 #import "YYModel.h"
+#import <React/RCTLog.h>
 
 #define kTuyaRNActivatorModuleHomeId @"homeId"
 #define kTuyaRNActivatorModuleSSID @"ssid"
