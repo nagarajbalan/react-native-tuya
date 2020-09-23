@@ -25,7 +25,7 @@ import com.tuya.smart.rnsdk.utils.Constant.TYPE
 
 import com.tuya.smart.home.sdk.builder.TuyaGwActivatorBuilder
 import com.tuya.smart.rnsdk.utils.TuyaReactUtils
-import com.inuker.bluetooth.library.channel.Timer.stop
+import com.tuya.sdk.blelib.channel.Timer.stop
 import com.tuya.smart.rnsdk.utils.ReactParamsCheck
 import java.util.*
 
