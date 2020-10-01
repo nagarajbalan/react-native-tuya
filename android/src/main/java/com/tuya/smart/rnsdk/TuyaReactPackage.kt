@@ -25,6 +25,7 @@ import com.tuya.smart.rnsdk.scene.TuyaSceneModule
 import com.tuya.smart.rnsdk.share.TuyaShareModule
 import com.tuya.smart.rnsdk.timer.TuyaTimerModule
 import com.tuya.smart.rnsdk.user.TuyaUserModule
+import com.tuya.smart.rnsdk.camera.TuyaCameraModule
 
 import java.util.*
 
@@ -34,32 +35,33 @@ class TuyaReactPackage : ReactPackage {
 //        return Collections.emptyList();
 //    }
 
-    override fun createNativeModules(reactContext: ReactApplicationContext): MutableList<NativeModule> {
-        val module: ArrayList<NativeModule> = ArrayList()
-        module.add(TuyaActivatorModule(reactContext))
-        module.add(TuyaCoreModule(reactContext))
-        module.add(TuyaDeviceModule(reactContext))
-        module.add(TuyaGatewayModule(reactContext))
-        module.add(TuyaOTAModule(reactContext))
-        module.add(TuyaSingleTransferModule(reactContext))
-        module.add(TuyaFeedBackModule(reactContext))
-        module.add(TuyaGroupModule(reactContext))
-        module.add(TuyaHomeDataManagerModule(reactContext))
-        module.add(TuyaHomeManagerModule(reactContext))
-        module.add(TuyaHomeMemberModule(reactContext))
-        module.add(TuyaHomeModule(reactContext))
-        module.add(TuyaRoomModule(reactContext))
-        module.add(TuyaMessageModule(reactContext))
-        module.add(TuyaPushModule(reactContext))
-        module.add(TuyaShareModule(reactContext))
-        module.add(TuyaTimerModule(reactContext))
-        module.add(TuyaUserModule(reactContext))
-        module.add(TuyaSceneModule(reactContext))
-        return module
-    }
+  override fun createNativeModules(reactContext: ReactApplicationContext): MutableList<NativeModule> {
+    val module: ArrayList<NativeModule> = ArrayList()
+    module.add(TuyaActivatorModule(reactContext))
+    module.add(TuyaCoreModule(reactContext))
+    module.add(TuyaDeviceModule(reactContext))
+    module.add(TuyaGatewayModule(reactContext))
+    module.add(TuyaOTAModule(reactContext))
+    module.add(TuyaSingleTransferModule(reactContext))
+    module.add(TuyaFeedBackModule(reactContext))
+    module.add(TuyaGroupModule(reactContext))
+    module.add(TuyaHomeDataManagerModule(reactContext))
+    module.add(TuyaHomeManagerModule(reactContext))
+    module.add(TuyaHomeMemberModule(reactContext))
+    module.add(TuyaHomeModule(reactContext))
+    module.add(TuyaRoomModule(reactContext))
+    module.add(TuyaMessageModule(reactContext))
+    module.add(TuyaPushModule(reactContext))
+    module.add(TuyaShareModule(reactContext))
+    module.add(TuyaTimerModule(reactContext))
+    module.add(TuyaUserModule(reactContext))
+    module.add(TuyaSceneModule(reactContext))
+    module.add(TuyaCameraModule(reactContext))
+    return module
+  }
 
-    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        val managers = ArrayList<ViewManager<*, *>>()
-        return managers
-    }
+  override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
+    val managers = ArrayList<ViewManager<*, *>>()
+    return managers
+  }
 }
