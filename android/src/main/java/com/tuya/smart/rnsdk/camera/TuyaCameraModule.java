@@ -27,16 +27,16 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openLivePreview(String countryCode, String uid, String passwd, String devId) {
+    public void openLivePreview(ReadableMap params) {
 
         Intent intent = new Intent(reactContext, CameraLivePreviewActivity.class);
 
         if(intent.resolveActivity(reactContext.getPackageManager()) != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(Constants.INTENT_DEVID, devId);
-            intent.putExtra(Constants.INTENT_COUNTRY_CODE, countryCode);
-            intent.putExtra(Constants.INTENT_UID, uid);
-            intent.putExtra(Constants.INTENT_PASSWD, passwd);
+            intent.putExtra(Constants.INTENT_DEVID, params.getString("devId"));
+            intent.putExtra(Constants.INTENT_COUNTRY_CODE, params.getString("countryCode"));
+            intent.putExtra(Constants.INTENT_UID, params.getString("uid"));
+            intent.putExtra(Constants.INTENT_PASSWD, params.getString("passwd"));
             reactContext.startActivity(intent);
             Log.d("ReactNative","Starting Activity");
         }
