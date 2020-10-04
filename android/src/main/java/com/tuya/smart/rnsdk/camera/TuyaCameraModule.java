@@ -10,6 +10,7 @@ import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.rnsdk.camera.activity.CameraLivePreviewActivity;
 
 import androidx.annotation.NonNull;
+import com.tuya.smart.rnsdk.camera.utils.Constants;
 
 public class TuyaCameraModule extends ReactContextBaseJavaModule {
     public TuyaCameraView TuyaCameraView;
@@ -26,13 +27,16 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openLivePreview() {
+    public void openLivePreview(String countryCode, String uid, String passwd, String devId) {
 
         Intent intent = new Intent(reactContext, CameraLivePreviewActivity.class);
 
         if(intent.resolveActivity(reactContext.getPackageManager()) != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //intent.putExtra(Constants.XXXCameraInfo, cameraInfo);
+            intent.putExtra(Constants.INTENT_DEVID, devId);
+            intent.putExtra(Constants.INTENT_COUNTRY_CODE, countryCode);
+            intent.putExtra(Constants.INTENT_UID, uid);
+            intent.putExtra(Constants.INTENT_PASSWD, passwd);
             reactContext.startActivity(intent);
             Log.d("ReactNative","Starting Activity");
         }

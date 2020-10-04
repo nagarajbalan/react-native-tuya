@@ -51,31 +51,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-//import android.support.annotation.Nullable;
-//import android.support.v7.app.AppCompatActivity;
-//import android.os.Bundle;
-//import android.support.v7.widget.Toolbar;
-//import android.util.Log;
-//import com.tuya.smart.camera.camerasdk.typlayer.callback.OnP2PCameraListener;
-//import com.tuya.smart.camera.camerasdk.typlayer.callback.OnRenderDirectionCallback;
-//import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
-//import com.tuya.smart.camera.ipccamerasdk.bean.ConfigCameraBean;
-//import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
-//import com.tuya.smart.camera.middleware.p2p.ICameraConfig;
-//import com.tuya.smart.camera.middleware.p2p.ITuyaSmartCameraP2P;
-//import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2P;
-//import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
-//import com.tuya.smart.camera.utils.AudioUtils;
-//import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
-//import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
-//import com.tuyasmart.camera.devicecontrol.bean.DpPTZControl;
-//import com.tuyasmart.camera.devicecontrol.bean.DpPTZStop;
-//import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
-//import com.tuya.smart.android.network.http.BusinessResponse;
-//import com.tuyasmart.stencil.utils.MessageUtil;
-
-//import com.tuya.smart.sdk.TuyaSdk;
-
 
 public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP2PCameraListener, View.OnClickListener, TuyaCameraView.CreateVideoViewCallback {
 
@@ -109,10 +84,17 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     public static final String INTENT_DEVID = "intent_devId";
     public static final String INTENT_LOCALKEY = "intent_localkey";
     public static final String INTENT_SDK_POROVIDER = "intent_sdk_provider";
+    public static final String INTENT_HOME_ID = "intent_home_id";
+    public static final String INTENT_COUNTRY_CODE = "intent_country_code";
+    public static final String INTENT_UID = "intent_uid";
+    public static final String INTENT_PASSWD = "intent_passwd";
 
     public static final int MSG_LOGIN_SUCCESS = 15;
     public static final int MSG_LOGIN_FAILURE = 16;
     private static ITuyaHomeCamera homeCamera;
+
+    public static  long HOME_ID = 1099001;
+    public static DeviceBean mCameraDevice;
 
 
     private Handler mHandler = new Handler() {
@@ -188,7 +170,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
     private void handleMute(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-                muteImg.setSelected(previewMute == ICameraP2P.MUTE);
+            muteImg.setSelected(previewMute == ICameraP2P.MUTE);
         } else {
             ToastUtil.shortToast(CameraLivePreviewActivity.this, "operation fail");
         }
@@ -197,7 +179,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
     private void handleClarity(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-                qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
+            qualityTv.setText(videoClarity == ICameraP2P.HD ? "HD" : "SD");
         } else {
             ToastUtil.shortToast(CameraLivePreviewActivity.this, "operation fail");
         }
@@ -205,7 +187,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
     private void handleConnect(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-                       preview();
+            preview();
         } else {
             ToastUtil.shortToast(CameraLivePreviewActivity.this, "connect fail");
         }
@@ -214,7 +196,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
     private void handleCreateDevice(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-                       connect();
+            connect();
         } else {
             ToastUtil.shortToast(CameraLivePreviewActivity.this, "create device fail");
         }
@@ -230,9 +212,12 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live_preview);
+        String countryCode = getIntent().getStringExtra(INTENT_COUNTRY_CODE);
+        String uid = getIntent().getStringExtra(INTENT_UID);
+        String passwd = getIntent().getStringExtra(INTENT_PASSWD);
         initView();
-        initData();
-        initListener();
+        TuyaHomeSdk.getUserInstance().loginWithUid(countryCode, uid, passwd, mLoginCallback);
+        afterLogin();
 
         if(mDeviceControl != null && mDeviceControl.isSupportCameraDps(DpPTZControl.ID)) {
             mVideoView.setOnRenderDirectionCallback(new OnRenderDirectionCallback() {
@@ -324,49 +309,126 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
     private void initData() {
         try {
-            TuyaHomeSdk.getUserInstance().loginWithUid("94","smartlifedev", "$marL15e*$#", mLoginCallback);
-            afterLogin();
-            //localKey = getIntent().getStringExtra(INTENT_LOCALKEY);
-            //devId = getIntent().getStringExtra(INTENT_DEVID);
-            localKey = "0423b890a9af4a5f"; // f4d8b0d531fdcb86
-            devId = "bf047c793ba263bb3dn7s6"; //bf0d79ea67dee52d5cifbl  // bf1eabac55e6bcaf26e6zs
 
-//        // 拿到的是p2pType ，需要转化成 sdkProvider
-           // int intentP2pType = getIntent().getIntExtra(INTENT_SDK_POROVIDER, -1);
-            int intentP2pType = 2;
+            devId = getIntent().getStringExtra(INTENT_DEVID);
+            mCameraDevice =  TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
+            localKey = mCameraDevice.getLocalKey();
+            Map<String, Object> map = mCameraDevice.getSkills();
+            int p2pType = -1;
+            if (map == null || map.size() == 0) {
+                p2pType = -1;
+            } else {
+                p2pType = (Integer) (map.get("p2pType"));
+            }
+
+
+            // 拿到的是p2pType ，需要转化成 sdkProvider
+            int intentP2pType = p2pType;
             mIsRunSoft = getIntent().getBooleanExtra("isRunsoft", true);
-                      mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(intentP2pType);
-                      mVideoView.setCameraViewCallback(this);
+            mCameraP2P = TuyaSmartCameraP2PFactory.generateTuyaSmartCamera(intentP2pType);
+            mVideoView.setCameraViewCallback(this);
             sdkProvider = intentP2pType == 1 ? 1 : 2;
-                       mVideoView.createVideoView(sdkProvider);
+            mVideoView.createVideoView(sdkProvider);
             if (null == mCameraP2P) {
                 showNotSupportToast();
             } else {
                 mCameraP2P.isEchoData(true);
                 mDeviceControl = TuyaCameraDeviceControlSDK.getCameraDeviceInstance(devId);
-                Log.d("INFO ", "mDeviceControl  -->"+mDeviceControl);
 
+                initListener();
                 getApi();
             }
         } catch (Exception ex){
-            Log.d("INFO ", "exception  -->"+ex);
+            Log.d("INFO ", "exception"+ex);
         }
     }
 
     private ILoginCallback mLoginCallback = new ILoginCallback() {
         @Override
         public void onSuccess(User user) {
-            Log.d("TAG", "user -->" + user.getUsername());
             mHandler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+            getDataFromServer();
         }
 
         @Override
         public void onError(String s, String s1) {
-            Log.d("TAG", "error --> "+s);
             Message msg = MessageUtil.getCallFailMessage(MSG_LOGIN_FAILURE, s, s1);
             mHandler.sendMessage(msg);
         }
     };
+
+    public void getDataFromServer() {
+        TuyaHomeSdk.getHomeManagerInstance().queryHomeList(new ITuyaGetHomeListCallback() {
+            @Override
+            public void onSuccess(List<HomeBean> homeBeans) {
+                if (homeBeans.size() == 0) {
+                    // mView.gotoCreateHome();
+                    return;
+                }
+
+                final long homeId = homeBeans.get(0).getHomeId();
+
+                HOME_ID = homeId;
+                PreferencesUtil.set("homeId", HOME_ID);
+                TuyaHomeSdk.newHomeInstance(homeId).getHomeDetail(new ITuyaHomeResultCallback() {
+                    @Override
+                    public void onSuccess(HomeBean bean) {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(String errorCode, String errorMsg) {
+
+                    }
+                });
+                TuyaHomeSdk.newHomeInstance(homeId).registerHomeStatusListener(new ITuyaHomeStatusListener() {
+                    @Override
+                    public void onDeviceAdded(String devId) {
+
+                    }
+
+                    @Override
+                    public void onDeviceRemoved(String devId) {
+
+                    }
+
+                    @Override
+                    public void onGroupAdded(long groupId) {
+
+                    }
+
+                    @Override
+                    public void onGroupRemoved(long groupId) {
+
+                    }
+
+                    @Override
+                    public void onMeshAdded(String meshId) {
+                        L.d(TAG, "onMeshAdded: " + meshId);
+                    }
+
+
+                });
+
+            }
+
+            @Override
+            public void onError(String errorCode, String error) {
+                TuyaHomeSdk.newHomeInstance(HOME_ID).getHomeLocalCache(new ITuyaHomeResultCallback() {
+                    @Override
+                    public void onSuccess(HomeBean bean) {
+                        L.d(TAG, com.alibaba.fastjson.JSONObject.toJSONString(bean));
+                        Log.d("TAG", bean.getDeviceList().toString());
+                    }
+
+                    @Override
+                    public void onError(String errorCode, String errorMsg) {
+
+                    }
+                });
+            }
+        });
+    }
 
     private void showNotSupportToast() {
         ToastUtil.shortToast(CameraLivePreviewActivity.this, "device is not support!");
@@ -376,6 +438,8 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
         mCameraP2P.createDevice(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
+
+                Log.d(TAG, "init camera view onsuccess");
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_CREATE_DEVICE, Constants.ARG1_OPERATE_SUCCESS));
             }
 
@@ -388,9 +452,11 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 
 
     private void connect() {
+
         mCameraP2P.connect(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
+
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_CONNECT, Constants.ARG1_OPERATE_SUCCESS));
             }
 
@@ -402,12 +468,19 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     }
 
 
-        private void preview() {
+    private void preview() {
         mCameraP2P.startPreview(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
                 Log.d(TAG, "start preview onSuccess");
+
+                // mVideoView.onResume();
                 isPlay = true;
+                if (null != mCameraP2P){
+                    AudioUtils.getModel(CameraLivePreviewActivity.this);
+                    mCameraP2P.registorOnP2PCameraListener(CameraLivePreviewActivity.this);
+                    mCameraP2P.generateCameraView(mVideoView.createdView());
+                }
             }
 
             @Override
@@ -423,18 +496,15 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
             Map postData = new HashMap();
             postData.put("devId", devId);
             mSmartCameraP2P = new TuyaSmartCameraP2P();
-            Log.d("TAG", "mSmartCameraP2P -->"+mSmartCameraP2P.toString());
 
             mSmartCameraP2P.requestCameraInfo(devId, new ICameraConfig() {
                 @Override
                 public void onFailure(BusinessResponse var1, ConfigCameraBean var2, String var3) {
-                    Log.d("TAG", "failure -->"+var1.toString());
                     ToastUtil.shortToast(CameraLivePreviewActivity.this, "get cameraInfo failed");
                 }
 
                 @Override
                 public void onSuccess(BusinessResponse var1, ConfigCameraBean var2, String var3) {
-                    Log.d("TAG", "success -->"+var1.toString());
 
                     p2pWd = var2.getPassword();
                     p2pId = var2.getP2pId();
@@ -442,7 +512,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
                 }
             });
         } catch (Exception ex) {
-            Log.d("TAG", "error "+ex.getMessage());
+            Log.d(TAG, "error "+ex.getMessage());
         }
     }
 
@@ -473,24 +543,28 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
             recordClick();
         } else if (id == R.id.photo_Txt) {
             snapShotClick();
-        } else if (id == R.id.replay_Txt) {//                Intent intent = new Intent(CameraLivePreviewActivity.this, CameraPlaybackActivity.class);
-//                intent.putExtra("isRunsoft", mIsRunSoft);
-//                intent.putExtra("p2pId", p2pId);
-//                intent.putExtra("p2pWd", p2pWd);
-//                intent.putExtra("localKey", localKey);
-//                intent.putExtra("p2pType", sdkProvider);
-//                startActivity(intent);
-        } else if (id == R.id.setting_Txt) {//                Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingActivity.class);
-//                intent1.putExtra("devId", devId);
-//                startActivity(intent1);
-        } else if (id == R.id.cloud_Txt) {//                if (sdkProvider == SDK_PROVIDER_V1) {
-//                    showNotSupportToast();
-//                    return;
-//                }
-//                Intent intent2 = new Intent(CameraLivePreviewActivity.this, CameraCloudStorageActivity.class);
-//                intent2.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
-//                intent2.putExtra(CommonDeviceDebugPresenter.INTENT_SDK_POROVIDER, sdkProvider);
-//                startActivity(intent2);
+        } else if (id == R.id.replay_Txt) {
+//            Intent intent = new Intent(CameraLivePreviewActivity.this, CameraPlaybackActivity.class);
+//            intent.putExtra("isRunsoft", mIsRunSoft);
+//            intent.putExtra("p2pId", p2pId);
+//            intent.putExtra("p2pWd", p2pWd);
+//            intent.putExtra("localKey", localKey);
+//            intent.putExtra("p2pType", sdkProvider);
+//            startActivity(intent);
+        } else if (id == R.id.setting_Txt) {
+//            Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingActivity.class);
+//            intent1.putExtra("devId", devId);
+//            startActivity(intent1);
+        } else if (id == R.id.cloud_Txt) {
+//            if (sdkProvider == SDK_PROVIDER_V1) {
+//                showNotSupportToast();
+//                return;
+//            }
+//            Intent intent2 = new Intent(CameraLivePreviewActivity.this, CameraCloudStorageActivity.class);
+//            intent2.putExtra(INTENT_DEVID, devId);
+//            intent2.putExtra(INTENT_SDK_POROVIDER, sdkProvider);
+//            intent2.putExtra(INTENT_HOME_ID, HOME_ID);
+//            startActivity(intent2);
         } else if (id == R.id.message_center_Txt) {//                Intent intent3 = new Intent(CameraLivePreviewActivity.this, AlarmDetectionActivity.class);
 //                intent3.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
 //                startActivity(intent3);

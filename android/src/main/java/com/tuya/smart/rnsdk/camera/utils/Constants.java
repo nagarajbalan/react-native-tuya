@@ -51,6 +51,13 @@ public class Constants {
     public static final int MOTION_CLASSIFY_SUCCESS = 2051;
     public static final int MSG_DELETE_ALARM_DETECTION = 2052;
 
+    public static final String INTENT_DEVID = "intent_devId";
+    public static final String INTENT_SDK_POROVIDER = "intent_sdk_provider";
+    public static final String INTENT_HOME_ID = "intent_home_id";
+    public static final String INTENT_COUNTRY_CODE = "intent_country_code";
+    public static final String INTENT_UID = "intent_uid";
+    public static final String INTENT_PASSWD = "intent_passwd";
+
     public synchronized static boolean hasStoragePermission() {
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "a.log";
         try {
