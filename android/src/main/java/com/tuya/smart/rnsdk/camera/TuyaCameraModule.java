@@ -6,6 +6,7 @@ import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.rnsdk.camera.activity.CameraLivePreviewActivity;
 

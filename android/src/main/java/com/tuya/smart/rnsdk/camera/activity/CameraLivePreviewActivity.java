@@ -35,20 +35,27 @@ import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
 import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
 import com.tuya.smart.camera.utils.AudioUtils;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
+import com.tuya.smart.home.sdk.api.ITuyaHomeStatusListener;
+import com.tuya.smart.home.sdk.bean.HomeBean;
+import com.tuya.smart.home.sdk.callback.ITuyaGetHomeListCallback;
+import com.tuya.smart.home.sdk.callback.ITuyaHomeResultCallback;
 import com.tuya.smart.rnsdk.R;
 import com.tuya.smart.rnsdk.camera.utils.Constants;
 import com.tuya.smart.rnsdk.camera.utils.ToastUtil;
 import com.tuya.smart.sdk.api.ITuyaGetBeanCallback;
+import com.tuya.smart.sdk.bean.DeviceBean;
 import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
 import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
 import com.tuyasmart.camera.devicecontrol.bean.DpPTZControl;
 import com.tuyasmart.camera.devicecontrol.bean.DpPTZStop;
 import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
 import com.tuyasmart.stencil.utils.MessageUtil;
+import com.tuyasmart.stencil.utils.PreferencesUtil;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
