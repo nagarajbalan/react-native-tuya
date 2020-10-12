@@ -1,8 +1,8 @@
 
 Pod::Spec.new do |s|
-  s.name             = 'TuyaSmartDemo'
+  s.name             = 'CameraSDK'
   s.version          = '0.8.2'
-  s.summary          = 'A short description of TuyaSmartDemo.'
+  s.summary          = 'A short description of CameraSDK.'
 
   s.description      = <<-DESC
 TODO: Add long description of the pod here.
@@ -18,8 +18,8 @@ TODO: Add long description of the pod here.
   s.default_subspec = 'UserInfo'
   
   s.subspec 'Base' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/Base/**/*.{h,m}', 'TuyaSmartDemo/Classes/Manager/**/*.{h,m}'
-    ss.resources = 'TuyaSmartDemo/Classes/Base/Assets/**/*'
+    ss.source_files = 'Camera/Classes/Base/**/*.{h,m}', 'Camera/Classes/Manager/**/*.{h,m}'
+    ss.resources = 'Camera/Classes/Base/Assets/**/*'
     
 #    ss.resource_bundles = {
 #      'base' => 'TuyaSmartDemo/Classes/Base/Assets/*.{lproj,json}'
@@ -40,35 +40,35 @@ TODO: Add long description of the pod here.
   end
   
   s.subspec 'Login' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/Login/**/*.{h,m}'
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.source_files = 'Camera/Classes/Login/**/*.{h,m}'
+    ss.dependency 'CameraSDK/Base'
     
     ss.dependency 'TuyaSmartBaseKit'
   end
   
   s.subspec 'SmartScene' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/SmartScene/**/*.{h,m}'
-    ss.resources = 'TuyaSmartDemo/Classes/SmartScene/Assets/**/*'
+    ss.source_files = 'Camera/Classes/SmartScene/**/*.{h,m}'
+    ss.resources = 'Camera/Classes/SmartScene/Assets/**/*'
     
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.dependency 'CameraSDK/Base'
     
     ss.dependency 'SDWebImage'
     ss.dependency 'TuyaSmartSceneKit'
   end
   
   s.subspec 'DeviceList' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/DeviceList/**/*.{h,m}'
-    ss.resources = 'TuyaSmartDemo/Classes/DeviceList/Assets/**/*'
+    ss.source_files = 'Camera/Classes/DeviceList/**/*.{h,m}'
+    ss.resources = 'Camera/Classes/DeviceList/Assets/**/*'
     
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.dependency 'CameraSDK/Base'
     
     ss.dependency 'SDWebImage'
     ss.dependency 'TuyaSmartDeviceKit'
   end
   
   s.subspec 'AddDevice' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/AddDevice/**/*.{h,m}'
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.source_files = 'Camera/Classes/AddDevice/**/*.{h,m}'
+    ss.dependency 'CameraSDK/Base'
     
     ss.dependency 'SDWebImage'
     ss.dependency 'Masonry'
@@ -76,15 +76,15 @@ TODO: Add long description of the pod here.
   end
   
   s.subspec 'UserInfo' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/UserInfo/**/*.{h,m}'
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.source_files = 'Camera/Classes/UserInfo/**/*.{h,m}'
+    ss.dependency 'CameraSDK/Base'
   end
   
   s.subspec 'IPC' do |ss|
-    ss.source_files = 'TuyaSmartDemo/Classes/IPC/**/*.{h,m}'
-    ss.resources = 'TuyaSmartDemo/Classes/IPC/Assets/**/*'
+    ss.source_files = 'Camera/Classes/IPC/**/*.{h,m}'
+    ss.resources = 'Camera/Classes/IPC/Assets/**/*'
     
-    ss.dependency 'TuyaSmartDemo/Base'
+    ss.dependency 'CameraSDK/Base'
     ss.dependency 'TuyaSmartCameraKit'
     ss.dependency 'TYEncryptImage'
     ss.dependency 'DACircularProgress'
