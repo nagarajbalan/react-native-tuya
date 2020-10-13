@@ -7,7 +7,9 @@
 //
 
 #import "TYDemoEditActionNoDataTableViewCell.h"
+#import "TYDemoTheme.h"
 #import "TPDemoViewUtil.h"
+#import "TPDemoViewConstants.h"
 
 @implementation TYDemoEditActionNoDataTableViewCell
 

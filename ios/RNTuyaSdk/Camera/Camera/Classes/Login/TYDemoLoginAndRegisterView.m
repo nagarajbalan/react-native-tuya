@@ -7,6 +7,8 @@
 //
 
 #import "TYDemoLoginAndRegisterView.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @implementation TYDemoLoginAndRegisterView
 {

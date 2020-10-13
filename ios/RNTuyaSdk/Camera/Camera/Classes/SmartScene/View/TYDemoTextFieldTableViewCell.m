@@ -7,6 +7,8 @@
 //
 
 #import "TYDemoTextFieldTableViewCell.h"
+#import "TPDemoViewConstants.h"
+
 
 @interface TYDemoTextFieldTableViewCell()
 

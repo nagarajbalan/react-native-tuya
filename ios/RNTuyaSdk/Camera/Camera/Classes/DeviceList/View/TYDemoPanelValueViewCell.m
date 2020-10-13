@@ -8,6 +8,8 @@
 
 #import "TYDemoPanelValueViewCell.h"
 #import "TPDemoViewUtil.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoPanelValueViewCell()
 

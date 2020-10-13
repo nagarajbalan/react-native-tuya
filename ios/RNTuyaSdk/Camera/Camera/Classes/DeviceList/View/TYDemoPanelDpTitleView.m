@@ -8,6 +8,8 @@
 
 #import "TYDemoPanelDpTitleView.h"
 #import "TPDemoViewUtil.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoPanelDpTitleView()
 

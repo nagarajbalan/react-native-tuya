@@ -7,6 +7,8 @@
 //
 
 #import "TYDemoPanelBaseViewCell.h"
+#import "TPDemoViewConstants.h"
+#import "TYDemoTheme.h"
 
 
 @implementation TYDemoPanelBaseViewCell

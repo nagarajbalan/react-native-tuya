@@ -7,7 +7,10 @@
 //
 
 #import "TYDemoEditActionTableViewCell.h"
+
+#import "UIView+TPDemoAdditions.h"
 #import "TPDemoViewUtil.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoEditActionTableViewCell()
 

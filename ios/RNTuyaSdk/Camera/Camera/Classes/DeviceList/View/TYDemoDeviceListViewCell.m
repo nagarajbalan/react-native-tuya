@@ -8,8 +8,11 @@
 
 #import "TYDemoDeviceListViewCell.h"
 #import "UIImageView+WebCache.h"
+#import "UIView+TPDemoAdditions.h"
 #import "TPDemoViewUtil.h"
 #import <TuyaSmartDeviceKit/TuyaSmartDeviceKit.h>
+#import "TPDemoViewConstants.h"
+#import "TYDemoTheme.h"
 
 @interface TYDemoDeviceListViewCell()
 

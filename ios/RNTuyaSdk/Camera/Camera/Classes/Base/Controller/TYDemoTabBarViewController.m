@@ -10,6 +10,9 @@
 #import "TPDemoNavigationController.h"
 
 #import "TYDemoConfiguration.h"
+#import "TYDemoTheme.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoTabBarViewController()
 

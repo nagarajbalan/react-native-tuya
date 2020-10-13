@@ -7,6 +7,7 @@
 //
 
 #import "TPDemoCellView.h"
+#import "TYDemoTheme.h"
 
 @implementation TPDemoCellView
 

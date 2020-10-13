@@ -7,6 +7,8 @@
 //
 
 #import "TYDemoPanelStringViewCell.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoPanelStringViewCell()
 
