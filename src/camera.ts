@@ -9,6 +9,10 @@ export type CameraLivePreviewParams = {
   devId: string;
 };
 
+export function testFunction() {
+  return tuya.testFunction();
+}
+
 export function openCameraLivePreview(params: CameraLivePreviewParams): Promise<string> {
   return tuya.openLivePreview(params);
 }
