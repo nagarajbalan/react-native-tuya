@@ -8,8 +8,6 @@
 
 #import "TYDemoPanelEnumViewCell.h"
 #import "TPDemoViewUtil.h"
-#import "UIView+TPDemoAdditions.h"
-#import "TPDemoViewConstants.h"
 
 @interface TYDemoPanelEnumViewCell()
 

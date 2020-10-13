@@ -8,8 +8,6 @@
 
 #import "TYDemoPanelBitmapViewCell.h"
 #import "TPDemoViewUtil.h"
-#import "TPDemoViewConstants.h"
-#import "UIView+TPDemoAdditions.h"
 
 @interface TYDemoPanelBitmapViewCell()
 

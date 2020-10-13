@@ -9,8 +9,6 @@
 #import "TYDemoEditSceneTableViewCell.h"
 
 #import "TPDemoViewUtil.h"
-#import "TPDemoViewConstants.h"
-#import "UIView+TPDemoAdditions.h"
 
 @interface TYDemoEditSceneTableViewCell()
 

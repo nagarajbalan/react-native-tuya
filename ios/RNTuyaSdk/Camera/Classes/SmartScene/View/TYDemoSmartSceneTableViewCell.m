@@ -10,7 +10,6 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "TPDemoViewUtil.h"
 #import <TuyaSmartSceneKit/TuyaSmartSceneKit.h>
-#import "TPDemoViewConstants.h"
 
 @interface TYDemoSmartSceneTableViewCell()
 

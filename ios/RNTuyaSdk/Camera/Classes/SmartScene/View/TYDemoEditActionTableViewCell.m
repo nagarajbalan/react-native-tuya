@@ -8,8 +8,6 @@
 
 #import "TYDemoEditActionTableViewCell.h"
 #import "TPDemoViewUtil.h"
-#import "TPDemoViewConstants.h"
-#import "UIView+TPDemoAdditions.h"
 
 @interface TYDemoEditActionTableViewCell()
 

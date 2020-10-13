@@ -7,16 +7,12 @@
 //
 
 #import "TYDemoTextFieldTableViewCell.h"
-#import "TPDemoViewConstants.h"
 
 @interface TYDemoTextFieldTableViewCell()
 
 @end
 
 @implementation TYDemoTextFieldTableViewCell
-
-
-#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0];
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -38,7 +34,7 @@
     UITextField *textField = [[UITextField alloc] initWithFrame:frame];
     
     textField.font = [UIFont systemFontOfSize:14];
-    textField.textColor =  UIColorFromRGB(0x888888); //HEXCOLOR(0x303030);
+    textField.textColor = HEXCOLOR(0x303030);
     textField.secureTextEntry = NO;
     textField.enablesReturnKeyAutomatically = YES;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;

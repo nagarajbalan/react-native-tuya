@@ -17,7 +17,6 @@
 #import "TPDemoUtils.h"
 
 #import "TYDemoRouteManager.h"
-#import "TPDemoViewConstants.h"
 
 @implementation TYDemoConfigModel
 
