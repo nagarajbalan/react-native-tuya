@@ -9,6 +9,7 @@
 #import "TYDemoSwitchPanelViewController.h"
 #import "TPDemoProgressUtils.h"
 #import "TPDemoUtils.h"
+#import "TYDemoTheme.h"
 
 /*
  doc link

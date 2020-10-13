@@ -17,6 +17,8 @@
 
 #import "TPDemoProgressUtils.h"
 
+#import "TYDemoTheme.h"
+
 /*
  doc link
  

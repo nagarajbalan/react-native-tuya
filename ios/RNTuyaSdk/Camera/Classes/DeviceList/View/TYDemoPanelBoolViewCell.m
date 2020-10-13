@@ -8,6 +8,8 @@
 
 #import "TYDemoPanelBoolViewCell.h"
 #import "TYDemoPanelDpTitleView.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoPanelBoolViewCell()
 

@@ -10,6 +10,9 @@
 #import "UIImageView+WebCache.h"
 #import "TPDemoViewUtil.h"
 #import <TuyaSmartDeviceKit/TuyaSmartDeviceKit.h>
+#import "TPDemoViewConstants.h"
+#import "UIView+TPDemoAdditions.h"
+#import "TYDemoTheme.h"
 
 @interface TYDemoDeviceListViewCell()
 

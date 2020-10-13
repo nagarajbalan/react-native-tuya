@@ -9,6 +9,7 @@
 #import "TYDemoActionTableViewCell.h"
 #import "TPDemoViewUtil.h"
 #import <TuyaSmartSceneKit/TuyaSmartSceneKit.h>
+#import "TPDemoViewConstants.h"
 
 @interface TYDemoActionTableViewCell()
 

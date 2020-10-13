@@ -10,6 +10,7 @@
 #import "Reachability.h"
 
 #import "TPDemoUtils.h"
+#import "TPDemoViewConstants.h"
 
 TYDemoAddDeviceUtils * sharedAddDeviceUtils() {
     return [TYDemoAddDeviceUtils sharedInstance];

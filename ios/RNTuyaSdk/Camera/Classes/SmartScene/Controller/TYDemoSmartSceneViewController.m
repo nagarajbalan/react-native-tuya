@@ -14,6 +14,7 @@
 #import "TPDemoUtils.h"
 #import "TPDemoNavigationController.h"
 #import "TPDemoProgressUtils.h"
+#import "TYDemoTheme.h"
 
 @interface TYDemoSmartSceneViewController ()
 
