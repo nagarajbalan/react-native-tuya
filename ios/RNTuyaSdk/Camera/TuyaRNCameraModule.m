@@ -14,6 +14,10 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "TuyaRNUtils+Network.h"
+#import "TYDemoCameraViewController.h"
+#import "TPDemoUtils.h"
+#import "UIView+React.h"
+#import "RCTUIManager.h"
 
 #define kTuyaCoreModuleAppkey @""
 #define kTuyaCoreModuleAppSecret @""
@@ -23,6 +27,7 @@
 #define kTuyaCoreModuleUserDefaultLocation_lat @"ty_rn_lat"
 #define kTuyaCoreModuleUserDefaultLocation_lon @"ty_rn_lon"
 
+
 @interface TuyaRNCameraModule()<CLLocationManagerDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
@@ -31,28 +36,28 @@
 
 
 @implementation TuyaRNCameraModule
-
+@synthesize bridge = _bridge;
 RCT_EXPORT_MODULE(TuyaCameraModule)
 
 RCT_EXPORT_METHOD(testFunction){
   RCTLogInfo(@"testFunction -> Printed from ios native");
 }
 
-RCT_EXPORT_METHOD(openLivePreview:(NSDictionary *)passedParams
-                  findEventsWithResolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject
-                  ){
-
-  @try {
-//    [device setValuesForKeysWithDictionary:passedParams];
-//    AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
-//    [appDelegate goToLivePreview:device];
-    
-  } @catch (NSException *exception) {
-
-  }
-  
-
+RCT_EXPORT_METHOD(openLivePreview: (nonnull NSNumber *)reactTag passParams:(NSDictionary *)passedParams ) {
+  RCTLogInfo(@"openLivePreview -> Printed from ios native");
+  NSLog(@"%@", passedParams.tysdk_JSONString);
+   
+  NSString *devId = passedParams[@"devId"];
+  NSLog(@"%@", devId);
+  UIViewController *vc = [[TYDemoCameraViewController alloc] initWithDeviceId:devId];
+  RCTUIManager *uiManager = _bridge.uiManager;
+  dispatch_async(uiManager.methodQueue, ^{
+      [uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+            UIView *view = viewRegistry[reactTag];
+            UIViewController *viewController = (UIViewController *)view.reactViewController;
+                  
+      }];
+  });
 }
 
 @end
