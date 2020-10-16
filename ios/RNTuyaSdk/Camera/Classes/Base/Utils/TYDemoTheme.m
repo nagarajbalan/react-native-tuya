@@ -82,11 +82,15 @@ static TYDemoTheme *_theme = nil;
 }
 
 + (void)initNavigationBar {
-    UINavigationBar *navigationBar = [UINavigationBar appearance];
-    navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [TYDemoTheme theme].status_font_color};
-    navigationBar.tintColor = [TYDemoTheme theme].status_font_color;
-    navigationBar.barTintColor = [TYDemoTheme theme].status_bg_color;
-//    navigationBar.translucent = NO;
+    @try {
+        UINavigationBar *navigationBar = [UINavigationBar appearance];
+        navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [TYDemoTheme theme].status_font_color};
+        navigationBar.tintColor = [TYDemoTheme theme].status_font_color;
+        navigationBar.barTintColor = [TYDemoTheme theme].status_bg_color;
+    //    navigationBar.translucent = NO;
+    } @catch (NSException *exception) {
+        
+    }
 }
 
 + (void)initTabBar {
