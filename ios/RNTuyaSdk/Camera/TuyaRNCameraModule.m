@@ -44,20 +44,25 @@ RCT_EXPORT_METHOD(testFunction){
 }
 
 RCT_EXPORT_METHOD(openLivePreview: (nonnull NSNumber *)reactTag passParams:(NSDictionary *)passedParams ) {
-  RCTLogInfo(@"openLivePreview -> Printed from ios native");
-  NSLog(@"%@", passedParams.tysdk_JSONString);
-   
   NSString *devId = passedParams[@"devId"];
-  NSLog(@"%@", devId);
-  UIViewController *vc = [[TYDemoCameraViewController alloc] initWithDeviceId:devId];
-  RCTUIManager *uiManager = _bridge.uiManager;
-  dispatch_async(uiManager.methodQueue, ^{
-      [uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
-            UIView *view = viewRegistry[reactTag];
-            UIViewController *viewController = (UIViewController *)view.reactViewController;
-                  
-      }];
-  });
+      
+        UIViewController *vc = [[TYDemoCameraViewController alloc] initWithDeviceId:devId];
+         RCTUIManager *uiManager = _bridge.uiManager;
+         dispatch_async(uiManager.methodQueue, ^{
+             [uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+                   UIView *view = viewRegistry[reactTag];
+                 
+                   //UIViewController *viewController = (UIViewController *)view.reactViewController;
+                   UIViewController *rootViewController = [[UIViewController alloc] init];
+                   rootViewController.view = view;
+                         
+                   UIWindow* window = [[UIApplication sharedApplication] keyWindow];
+                   [window.rootViewController.view addSubview: vc.view];
+                         
+                   [[UIApplication sharedApplication].delegate.window.rootViewController.navigationController pushViewController:vc animated:YES];
+                         
+             }];
+         });
 }
 
 @end
