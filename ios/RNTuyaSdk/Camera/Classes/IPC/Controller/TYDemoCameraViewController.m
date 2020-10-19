@@ -55,12 +55,59 @@
 }
 
 - (instancetype)initWithDeviceId:(NSString *)devId {
+    
+    NSString *countryCode   = @"";
+    NSString *uid         = @"";
+    NSString *password      = @"";
+    
     if (self = [super initWithNibName:nil bundle:nil]) {
         _devId = devId;
-        _camera = [[TuyaSmartCamera alloc] initWithDeviceId:devId];
-        [_camera.dpManager addObserver:self];
+        WEAKSELF_TYSDK
+            [[TuyaSmartUser sharedInstance] loginOrRegisterWithCountryCode:countryCode uid:uid password:password success:^{
+                self->_homeManager = [[TuyaSmartHomeManager alloc] init];
+                self->_homeManager.delegate = self;
+                [self.homeManager getHomeListWithSuccess:^(NSArray<TuyaSmartHomeModel *> *homes) {
+                    
+                    NSString *homeId = [NSString stringWithFormat:@"%lld", homes[0].homeId];
+                     if ([homeId longLongValue] > 0) {
+                    self.home = [TuyaSmartHome homeWithHomeId:[homeId longLongValue]];
+                    self.home.delegate = self;
+
+                         [self reloadDataFromCloud : devId];
+
+                     }
+
+                } failure:^(NSError *error) {
+                }];
+               
+            } failure:^(NSError *error) {
+            }];
     }
     return self;
+}
+
+- (void)reloadDataFromCloud: (NSString *)devId {
+    
+    [self.home getHomeDetailWithSuccess:^(TuyaSmartHomeModel *homeModel) {
+        self->_camera = [[TuyaSmartCamera alloc] initWithDeviceId:devId];
+
+        [self->_camera.dpManager addObserver:self];
+        [self retryAction];
+    } failure:^(NSError *error) {
+        if ([error.localizedFailureReason isEqualToString:@"PERMISSION_DENIED"]) {
+         }
+   }];
+                          
+    // sigmesh
+//    [[TuyaSmartSIGMeshManager sharedInstance] startScanWithScanType:ScanForProxyed meshModel:self.home.sigMeshModel];
+//    WEAKSELF_TYSDK
+//
+//    [self.home getHomeDetailWithSuccess:^(TuyaSmartHomeModel *homeModel) {
+//
+//    } failure:^(NSError *error) {
+//        if ([error.localizedFailureReason isEqualToString:@"PERMISSION_DENIED"]) {
+//        }
+//    }];
 }
 
 - (NSString *)titleForCenterItem {
