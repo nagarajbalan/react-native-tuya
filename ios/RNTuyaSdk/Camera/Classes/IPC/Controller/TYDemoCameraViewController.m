@@ -4,6 +4,7 @@
 //  Created by 傅浪 on 2019/3/13.
 //  Copyright © 2019 fulang@tuya.com. All rights reserved.
 //
+#import <TuyaSmartBaseKit/TuyaSmartBaseKit.h>
 
 #import "TYDemoCameraViewController.h"
 #import "TuyaSmartCameraControlView.h"
@@ -15,6 +16,7 @@
 #import "TYDemoCameraMessageViewController.h"
 #import "TPDemoViewConstants.h"
 #import "TPDemoProgressUtils.h"
+#import "TYDemoApplicationImpl.h"
 
 #define VideoViewWidth [UIScreen mainScreen].bounds.size.width
 #define VideoViewHeight ([UIScreen mainScreen].bounds.size.width / 16 * 9)
@@ -46,6 +48,10 @@
 
 @property (nonatomic, strong) UIButton *retryButton;
 
+@property (nonatomic, strong) TuyaSmartHomeManager *homeManager;
+
+@property (nonatomic, strong) TuyaSmartHome *home;
+
 @end
 
 @implementation TYDemoCameraViewController
@@ -59,7 +65,7 @@
     NSString *countryCode   = @"";
     NSString *uid         = @"";
     NSString *password      = @"";
-    
+  
     if (self = [super initWithNibName:nil bundle:nil]) {
         _devId = devId;
         WEAKSELF_TYSDK
@@ -67,15 +73,14 @@
                 self->_homeManager = [[TuyaSmartHomeManager alloc] init];
                 self->_homeManager.delegate = self;
                 [self.homeManager getHomeListWithSuccess:^(NSArray<TuyaSmartHomeModel *> *homes) {
-                    
                     NSString *homeId = [NSString stringWithFormat:@"%lld", homes[0].homeId];
                      if ([homeId longLongValue] > 0) {
                     self.home = [TuyaSmartHome homeWithHomeId:[homeId longLongValue]];
                     self.home.delegate = self;
 
-                         [self reloadDataFromCloud : devId];
+                        [self reloadDataFromCloud : devId];
 
-                     }
+                    }
 
                 } failure:^(NSError *error) {
                 }];
@@ -125,7 +130,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.camera.device.deviceModel.name;
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
+    self.navigationController.navigationBar.tintColor = [UIColor blueColor];
+    self.view.backgroundColor = [UIColor blueColor];
     self.topBarView.leftItem = self.leftBackItem;
     [self.view addSubview:self.videoContainer];
     [self.view addSubview:self.indicatorView];
@@ -153,7 +160,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.camera addObserver:self];
-    
     [self retryAction];
 }
 
