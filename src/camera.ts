@@ -21,6 +21,6 @@ export type CameraTumbnailParams = {
   devId: string;
 };
 
-export function getCameraTumbnail(params:CameraTumbnailParams): Promise<string> = {
+export function getCameraTumbnail(params:CameraTumbnailParams): Promise<string> {
   return tuya.getTumbnail(params);
 }
