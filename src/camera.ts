@@ -16,3 +16,11 @@ export function testFunction() {
 export function openCameraLivePreview(reactTag:number, params: CameraLivePreviewParams): Promise<string> {
   return tuya.openLivePreview(reactTag, params);
 }
+
+export type CameraTumbnailParams = {
+  devId: string;
+};
+
+export function getCameraTumbnail(params:CameraTumbnailParams): Promise<string> = {
+  return tuya.getTumbnail(params);
+}
