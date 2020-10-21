@@ -24,3 +24,7 @@ export type CameraTumbnailParams = {
 export function getCameraTumbnail(params:CameraTumbnailParams): Promise<string> {
   return tuya.getTumbnail(params);
 }
+
+export function getHomeDetails(): Promise<any> {
+  return tuya.getHomeDetails();
+}
