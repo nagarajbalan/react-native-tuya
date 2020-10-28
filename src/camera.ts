@@ -13,13 +13,9 @@ export function testFunction() {
   return tuya.testFunction();
 }
 
-export function openCameraLivePreview(reactTag:number, params: CameraLivePreviewParams): Promise<string> {
-  return tuya.openLivePreview(reactTag, params);
+export function openCameraLivePreview(reactTag:number, params: CameraLivePreviewParams, openSettingsView:function): Promise<string> {
+  return tuya.openLivePreview(reactTag, params, openSettingsView);
 }
-
-export type CameraTumbnailParams = {
-  devId: string;
-};
 
 export function getCameraTumbnail(): Promise<any> {
   return tuya.getTumbnail();
