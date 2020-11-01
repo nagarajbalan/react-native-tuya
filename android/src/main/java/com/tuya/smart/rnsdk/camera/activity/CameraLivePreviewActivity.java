@@ -585,9 +585,9 @@ private Callback callBackSettingsPress;
 //            intent2.putExtra(INTENT_HOME_ID, HOME_ID);
 //            startActivity(intent2);
         } else if (id == R.id.message_center_Txt) {
-            Intent intent3 = new Intent(CameraLivePreviewActivity.this, MotionDetectionActivity.class);
-                intent3.putExtra(INTENT_DEVID, devId);
-                startActivity(intent3);
+            // Intent intent3 = new Intent(CameraLivePreviewActivity.this, MotionDetectionActivity.class);
+            //     intent3.putExtra(INTENT_DEVID, devId);
+            //     startActivity(intent3);
         }
     }
 
