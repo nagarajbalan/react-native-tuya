@@ -571,9 +571,9 @@ private Callback callBackSettingsPress;
         //}
         else if (id == R.id.setting_Txt) {
           //  callBackSettingsPress.invoke();
-            Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingsActivity2.class);
-            intent1.putExtra("devId", devId);
-            startActivity(intent1);
+            // Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingsActivity2.class);
+            // intent1.putExtra("devId", devId);
+            // startActivity(intent1);
         } else if (id == R.id.cloud_Txt) {
 //            if (sdkProvider == SDK_PROVIDER_V1) {
 //                showNotSupportToast();
