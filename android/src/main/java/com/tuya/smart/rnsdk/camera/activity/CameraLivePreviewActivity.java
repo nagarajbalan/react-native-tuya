@@ -1,6 +1,7 @@
 package com.tuya.smart.rnsdk.camera.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.facebook.react.bridge.Callback;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -103,6 +105,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     public static  long HOME_ID = 1099001;
     public static DeviceBean mCameraDevice;
 
+private Callback callBackSettingsPress;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -223,8 +226,11 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
         String uid = getIntent().getStringExtra(INTENT_UID);
         String passwd = getIntent().getStringExtra(INTENT_PASSWD);
         initView();
-        TuyaHomeSdk.getUserInstance().loginWithUid(countryCode, uid, passwd, mLoginCallback);
-        afterLogin();
+       // TuyaHomeSdk.getUserInstance().loginWithUid(countryCode, uid, passwd, mLoginCallback);
+        initHomeCamera();
+        initData();
+
+        // getDataFromServer();
 
         if(mDeviceControl != null && mDeviceControl.isSupportCameraDps(DpPTZControl.ID)) {
             mVideoView.setOnRenderDirectionCallback(new OnRenderDirectionCallback() {
@@ -259,9 +265,11 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
                 }
             });
         }
+
     }
 
-    public static void afterLogin() {
+
+    public static void initHomeCamera() {
 
         //there is the somethings that need to set.For example the lat and lon;
         //   TuyaSdk.setLatAndLong();
@@ -298,7 +306,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
         speakTxt = findViewById(R.id.speak_Txt);
         recordTxt = findViewById(R.id.record_Txt);
         photoTxt = findViewById(R.id.photo_Txt);
-        replayTxt = findViewById(R.id.replay_Txt);
+        //replayTxt = findViewById(R.id.replay_Txt);
         settingTxt = findViewById(R.id.setting_Txt);
         settingTxt.setOnClickListener(this);
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
@@ -479,7 +487,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
         mCameraP2P.startPreview(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
-                Log.d(TAG, "start preview onSuccess");
+                Log.d(TAG, "start preview onSuccess -->");
 
                 // mVideoView.onResume();
                 isPlay = true;
@@ -487,6 +495,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
                     AudioUtils.getModel(CameraLivePreviewActivity.this);
                     mCameraP2P.registorOnP2PCameraListener(CameraLivePreviewActivity.this);
                     mCameraP2P.generateCameraView(mVideoView.createdView());
+                    getThumbnail();
                 }
             }
 
@@ -531,7 +540,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
         speakTxt.setOnClickListener(this);
         recordTxt.setOnClickListener(this);
         photoTxt.setOnClickListener(this);
-        replayTxt.setOnClickListener(this);
+       // replayTxt.setOnClickListener(this);
 
         cloudStorageTxt.setOnClickListener(this);
         messageCenterTxt.setOnClickListener(this);
@@ -550,7 +559,8 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
             recordClick();
         } else if (id == R.id.photo_Txt) {
             snapShotClick();
-        } else if (id == R.id.replay_Txt) {
+        }
+        //else if (id == R.id.replay_Txt) {
 //            Intent intent = new Intent(CameraLivePreviewActivity.this, CameraPlaybackActivity.class);
 //            intent.putExtra("isRunsoft", mIsRunSoft);
 //            intent.putExtra("p2pId", p2pId);
@@ -558,10 +568,12 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 //            intent.putExtra("localKey", localKey);
 //            intent.putExtra("p2pType", sdkProvider);
 //            startActivity(intent);
-        } else if (id == R.id.setting_Txt) {
-//            Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingActivity.class);
-//            intent1.putExtra("devId", devId);
-//            startActivity(intent1);
+        //}
+        else if (id == R.id.setting_Txt) {
+          //  callBackSettingsPress.invoke();
+            Intent intent1 = new Intent(CameraLivePreviewActivity.this, SettingsActivity2.class);
+            intent1.putExtra("devId", devId);
+            startActivity(intent1);
         } else if (id == R.id.cloud_Txt) {
 //            if (sdkProvider == SDK_PROVIDER_V1) {
 //                showNotSupportToast();
@@ -572,9 +584,10 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
 //            intent2.putExtra(INTENT_SDK_POROVIDER, sdkProvider);
 //            intent2.putExtra(INTENT_HOME_ID, HOME_ID);
 //            startActivity(intent2);
-        } else if (id == R.id.message_center_Txt) {//                Intent intent3 = new Intent(CameraLivePreviewActivity.this, AlarmDetectionActivity.class);
-//                intent3.putExtra(CommonDeviceDebugPresenter.INTENT_DEVID, devId);
-//                startActivity(intent3);
+        } else if (id == R.id.message_center_Txt) {
+            Intent intent3 = new Intent(CameraLivePreviewActivity.this, MotionDetectionActivity.class);
+                intent3.putExtra(INTENT_DEVID, devId);
+                startActivity(intent3);
         }
     }
 
@@ -646,17 +659,22 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     }
 
     private void muteClick() {
+        Log.d("TAG", "mute clicked -->");
         int mute;
         mute = previewMute == ICameraP2P.MUTE ? ICameraP2P.UNMUTE : ICameraP2P.MUTE;
         mCameraP2P.setMute(ICameraP2P.PLAYMODE.LIVE, mute, new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
+                Log.d("TAG", "mute clicked success -->"+data);
+
                 previewMute = Integer.valueOf(data);
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_MUTE, Constants.ARG1_OPERATE_SUCCESS));
             }
 
             @Override
             public void onFailure(int sessionId, int requestId, int errCode) {
+                Log.d("TAG", "mute clicked failed -->");
+
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_MUTE, Constants.ARG1_OPERATE_FAIL));
             }
         });
@@ -719,7 +737,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     private void recordStatue(boolean isRecording) {
         speakTxt.setEnabled(!isRecording);
         photoTxt.setEnabled(!isRecording);
-        replayTxt.setEnabled(!isRecording);
+       // replayTxt.setEnabled(!isRecording);
         recordTxt.setEnabled(true);
         recordTxt.setSelected(isRecording);
     }
@@ -819,7 +837,7 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     public void onReceiveSpeakerEchoData(ByteBuffer pcm, int sampleRate) {
         if (null != mCameraP2P){
             int length = pcm.capacity();
-            Log.d(TAG, "receiveSpeakerEchoData pcmlength " + length + " sampleRate " + sampleRate);
+            Log.d(TAG, "receiveSpeakerEchoData pcmlength --> " + length + " sampleRate " + sampleRate);
             byte[] pcmData = new byte[length];
             pcm.get(pcmData, 0, length);
             mCameraP2P.sendAudioTalkData(pcmData,length);
@@ -846,6 +864,41 @@ public class CameraLivePreviewActivity extends AppCompatActivity  implements OnP
     @Override
     public void onActionUP() {
 
+    }
+
+    private void getThumbnail() {
+        Log.d("TAG", "get thumbnail -->");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartLife/Thumbnail/";
+            File file = new File(path);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            picPath = path;
+        }
+        mCameraP2P.snapshot(picPath, CameraLivePreviewActivity.this, ICameraP2P.PLAYMODE.LIVE, new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String fPath) {
+                Log.d(TAG, "snapshot data --> "+fPath);// "/storage/emulated/0/SmartLife/Thumbnail/1603367041293.png"
+
+                File savedFile = new File(fPath);
+                Log.d(TAG, "savedFile.getParent() --> "+savedFile.getParent());
+                String modifiedPath = savedFile.getParent()+"/"+"CameraThumbnail"+".png";
+//                CLLog.d("RecordStop","dir: "+modifiedPath);
+                File newFile = new File(modifiedPath);
+                savedFile.renameTo(newFile);
+                //mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_SCREENSHOT, Constants.ARG1_OPERATE_SUCCESS, data));
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+               // mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_SCREENSHOT, Constants.ARG1_OPERATE_FAIL));
+            }
+        });
+    }
+
+    public void setOnPressSettingsCallback(Callback callBackMethod) {
+        this.callBackSettingsPress = callBackMethod;
     }
 }
 

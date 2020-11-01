@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/camera_video_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".rnsdk.camera.activity.CameraLivePreviewActivity">
@@ -50,6 +51,18 @@
             android:text="HD"
             android:textColor="@color/white"
             android:textSize="@dimen/ts_12" />
+
+        <ImageView
+            android:id="@+id/camera_full_screen"
+            android:layout_width="@dimen/wh_28"
+            android:layout_height="@dimen/wh_28"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/camera_quality"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_10"
+            android:layout_marginLeft="70dp"
+            android:gravity="center"
+            android:src="@drawable/ic_full_screen" />
     </RelativeLayout>
 
     <include
