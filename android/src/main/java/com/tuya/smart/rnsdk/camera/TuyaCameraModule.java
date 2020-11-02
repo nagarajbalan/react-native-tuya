@@ -1,13 +1,10 @@
 package com.tuya.smart.rnsdk.camera;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -16,26 +13,15 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.tuya.smart.android.camera.api.ITuyaHomeCamera;
 import com.tuya.smart.android.common.utils.L;
-import com.tuya.smart.android.network.http.BusinessResponse;
-import com.tuya.smart.android.user.api.ILoginCallback;
-import com.tuya.smart.android.user.bean.User;
-import com.tuya.smart.camera.camerasdk.typlayer.callback.OnRenderDirectionCallback;
-import com.tuya.smart.camera.camerasdk.typlayer.callback.OperationDelegateCallBack;
-import com.tuya.smart.camera.ipccamerasdk.bean.ConfigCameraBean;
 import com.tuya.smart.camera.ipccamerasdk.p2p.ICameraP2P;
-import com.tuya.smart.camera.middleware.p2p.ICameraConfig;
 import com.tuya.smart.camera.middleware.p2p.ITuyaSmartCameraP2P;
-import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2P;
-import com.tuya.smart.camera.middleware.p2p.TuyaSmartCameraP2PFactory;
 import com.tuya.smart.camera.middleware.widget.TuyaCameraView;
-import com.tuya.smart.home.sdk.api.ITuyaHomeStatusListener;
 import com.tuya.smart.home.sdk.bean.HomeBean;
 import com.tuya.smart.home.sdk.callback.ITuyaGetHomeListCallback;
 import com.tuya.smart.home.sdk.callback.ITuyaHomeResultCallback;
 import com.tuya.smart.rnsdk.camera.activity.CameraLivePreviewActivity;
 
 import androidx.annotation.NonNull;
-import kotlin.jvm.internal.Intrinsics;
 
 import com.tuya.smart.rnsdk.camera.utils.Constants;
 import com.tuya.smart.home.sdk.TuyaHomeSdk;
@@ -46,22 +32,15 @@ import com.tuyasmart.camera.devicecontrol.ITuyaCameraDevice;
 import com.tuyasmart.camera.devicecontrol.TuyaCameraDeviceControlSDK;
 import com.tuyasmart.camera.devicecontrol.api.ITuyaCameraDeviceControlCallback;
 import com.tuyasmart.camera.devicecontrol.bean.DpBasicIndicator;
-import com.tuyasmart.camera.devicecontrol.bean.DpPTZControl;
-import com.tuyasmart.camera.devicecontrol.bean.DpPTZStop;
+import com.tuyasmart.camera.devicecontrol.bean.DpBasicNightvision;
 import com.tuyasmart.camera.devicecontrol.model.DpNotifyModel;
-import com.tuyasmart.camera.devicecontrol.model.PTZDirection;
-import com.tuyasmart.stencil.utils.MessageUtil;
 import com.tuyasmart.stencil.utils.PreferencesUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TuyaCameraModule extends ReactContextBaseJavaModule {
     public TuyaCameraView TuyaCameraView;
@@ -74,7 +53,6 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     private static ITuyaHomeCamera homeCamera;
     public static DeviceBean mCameraDevice;
     ITuyaCameraDevice mTuyaCameraDevice;
-
 
 
     public TuyaCameraModule (ReactApplicationContext reactContext) {
@@ -103,8 +81,6 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       // return path;
-
     }
 
     @ReactMethod
@@ -162,18 +138,19 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCameraIndicatorStatus(ReadableMap params, final Promise promise) {
+    public void getCameraStatus(ReadableMap params, final Promise promise) {
 
         String devId = params.getString("devId");
         registerCameraDevice(devId);
 
-        if (mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
-            boolean o = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
-            promise.resolve(TuyaReactUtils.INSTANCE.parseToWritableMap(o));
+        WritableMap returnParams = Arguments.createMap();
+        String indicatorStatus = getIndicatorStatus(mTuyaCameraDevice);
+        String nightVisionStatus = getNightVisionStatus(mTuyaCameraDevice);
 
-        } else {
-            promise.reject("-1", "Camera does not support");
-        }
+        returnParams.putString("indicator_status", indicatorStatus);
+        returnParams.putString("night_vision_status", nightVisionStatus);
+
+        promise.resolve(returnParams);
     }
 
     @ReactMethod
@@ -182,9 +159,32 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
             changeIndicatorStatus(promise);
         } else {
             registerCameraDevice(params.getString("devId"));
+        }
+    }
+
+    @ReactMethod
+    public void getCameraNightVisionStatus(ReadableMap params, final Promise promise) {
+        String devId = params.getString("devId");
+        registerCameraDevice(devId);
+
+        if (mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
+            boolean status = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
+            String result = status == true ? "On" : "Off";
+            promise.resolve(result);
+
+        } else {
+            promise.reject("-1", "Camera does not support");
+        }
+    }
+
+    @ReactMethod
+    public void changeCameraNightVision(ReadableMap params, final Promise promise) {
+        if(mTuyaCameraDevice != null ) {
+            changeNightVision(params,promise);
+        } else {
+            registerCameraDevice(params.getString("devId"));
 
         }
-
     }
 
     @Nullable
@@ -234,13 +234,41 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         });
     }
 
+    public String getIndicatorStatus(ITuyaCameraDevice mTuyaCameraDevice) {
+        String indicatorStatus = "";
+        if (mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
+            boolean status = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
+            String result = status == true ? "On" : "Off";
+            indicatorStatus = result;
+
+        } else {
+           indicatorStatus = "-1";
+        }
+        return indicatorStatus;
+    }
+
+    public String getNightVisionStatus(ITuyaCameraDevice mTuyaCameraDevice) {
+        String nightVisionStatus = "";
+        if (mTuyaCameraDevice.isSupportCameraDps(DpBasicNightvision.ID)) {
+            String status = mTuyaCameraDevice.queryStringCurrentCameraDps(DpBasicNightvision.ID);
+
+            nightVisionStatus = status;
+
+        } else {
+            nightVisionStatus = "-1";
+        }
+        return nightVisionStatus;
+    }
+
+
     public void changeIndicatorStatus(final Promise promise) {
         if( mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
             boolean currentStatus = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
             mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpBasicIndicator.ID, new ITuyaCameraDeviceControlCallback<Boolean>() {
                 @Override
                 public void onSuccess(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, Boolean status) {
-                    promise.resolve(TuyaReactUtils.INSTANCE.parseToWritableMap(status));
+                    String result = status == true ? "On" : "Off";
+                    promise.resolve(result);
                 }
 
                 @Override
@@ -249,6 +277,26 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
                 }
             });
             mTuyaCameraDevice.publishCameraDps(DpBasicIndicator.ID, !currentStatus);
+        } else {
+            promise.reject("-1", "Camera not support.");
+        }
+    }
+
+    public void changeNightVision(ReadableMap params, final Promise promise) {
+        if( mTuyaCameraDevice.isSupportCameraDps(DpBasicNightvision.ID)) {
+            String currentStatus = mTuyaCameraDevice.queryStringCurrentCameraDps(DpBasicNightvision.ID);
+            mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpBasicNightvision.ID, new ITuyaCameraDeviceControlCallback<String>() {
+                @Override
+                public void onSuccess(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, String status) {
+                    promise.resolve(status);
+                }
+
+                @Override
+                public void onFailure(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, String s1, String s2) {
+                    promise.reject("-1", "Failure in indicator status change");
+                }
+            });
+            mTuyaCameraDevice.publishCameraDps(DpBasicNightvision.ID, params.getString("nightMode"));
         } else {
             promise.reject("-1", "Camera not support.");
         }
