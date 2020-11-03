@@ -49,62 +49,7 @@ public class TYCameraManager extends ViewGroupManager<CustomCameraView> {
                 .put(
                  "onSettingsClick",
                 MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onSettingsBtnClick")))
+                .put("onFullScreenClick", MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onFullScreenBtnClick")))
                 .build();
     }
-
-//    @ReactMethod
-//    public void onSettingsBtnClick(String devId) {
-//        // Create map for params
-//        WritableMap payload = Arguments.createMap();
-//        // Put data to map
-//        payload.putString("devId", devId);
-//        // Get EventEmitter from context and send event thanks to it
-//        this.mCallerContext
-//                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-//                .emit("loadSettings", payload);
-//    }
-//    @Override
-//    public Map<String,Integer> getCommandsMap() {
-//        Log.d("React"," View manager getCommandsMap:");
-//        return MapBuilder.of(
-//                "saveImage",
-//                COMMAND_SAVE_IMAGE);
-//    }
-//
-//    @Override
-//    public void receiveCommand(
-//            SignatureCaptureMainView view,
-//            int commandType,
-//            @Nullable ReadableArray args) {
-//        Assertions.assertNotNull(view);
-//        Assertions.assertNotNull(args);
-//        switch (commandType) {
-//            case COMMAND_SAVE_IMAGE: {
-//                view.saveImage();
-//                return;
-//            }
-//
-//            default:
-//                throw new IllegalArgumentException(String.format(
-//                        "Unsupported command %d received by %s.",
-//                        commandType,
-//                        getClass().getSimpleName()));
-//        }
-//    }
-
-
-
-//    @SuppressLint("ResourceAsColor")
-//    @ReactProp(name = "src")
-//    public void setSrc(CustomCameraView view, @Nullable String sources) {
-//        view.setBackgroundColor(R.color.black);
-//        //view.setSource(sources);
-//    }
-
-
-//
-//    @ReactProp(name = ViewProps.RESIZE_MODE)
-//    public void setResizeMode(ReactImageView view, @Nullable String resizeMode) {
-//        view.setScaleType(ImageResizeMode.toScaleType(resizeMode));
-//    }
 }

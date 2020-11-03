@@ -75,6 +75,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     private TuyaCameraView mVideoView;
     private ImageView muteImg;
     private TextView qualityTv;
+    private ImageView mFullScreenImg;
     private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt,messageCenterTxt, photoAlbumTxt;
 
     private ICameraP2P mCameraP2P;
@@ -195,12 +196,13 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         mVideoView = findViewById(R.id.camera_video_view);
         muteImg = findViewById(R.id.camera_mute);
         qualityTv = findViewById(R.id.camera_quality);
+        mFullScreenImg = findViewById(R.id.camera_full_screen);
         speakTxt = findViewById(R.id.speak_Txt);
         recordTxt = findViewById(R.id.record_Txt);
         photoTxt = findViewById(R.id.photo_Txt);
         //replayTxt = findViewById(R.id.replay_Txt);
         settingTxt = findViewById(R.id.setting_Txt);
-        photoAlbumTxt = findViewById(R.id.photo_album_Txt);
+        //photoAlbumTxt = findViewById(R.id.photo_album_Txt);
         settingTxt.setOnClickListener(this);
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
         messageCenterTxt =  findViewById(R.id.message_center_Txt);
@@ -283,11 +285,12 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
         muteImg.setOnClickListener(this);
         qualityTv.setOnClickListener(this);
+        mFullScreenImg.setOnClickListener(this);
         speakTxt.setOnClickListener(this);
         recordTxt.setOnClickListener(this);
         photoTxt.setOnClickListener(this);
        // replayTxt.setOnClickListener(this);
-        photoAlbumTxt.setOnClickListener(this);
+       // photoAlbumTxt.setOnClickListener(this);
 
         cloudStorageTxt.setOnClickListener(this);
         messageCenterTxt.setOnClickListener(this);
@@ -528,6 +531,8 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             muteClick();
         } else if (id == R.id.camera_quality) {
             setVideoClarity();
+        } else if (id == R.id.camera_full_screen) {
+            setFullScreenView();
         } else if (id == R.id.speak_Txt) {
             speakClick();
         } else if (id == R.id.record_Txt) {
@@ -535,9 +540,9 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         } else if (id == R.id.photo_Txt) {
             snapShotClick();
         }
-        else if (id == R.id.photo_album_Txt) {
-            //
-        }
+//        else if (id == R.id.photo_album_Txt) {
+//            //
+//        }
         else if (id == R.id.setting_Txt) {
             onSettingsBtnClick();
            // callBackSettingsPress.invoke();
@@ -612,6 +617,20 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             }
         });
 
+    }
+
+    private void setFullScreenView() {
+        try {
+            WritableMap event = Arguments.createMap();
+
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "onFullScreenClick",
+                    event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -846,31 +865,20 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     public void onSettingsBtnClick() {
         try {
-        WritableMap event = Arguments.createMap();
-        WritableMap camInfo = Arguments.createMap();
-            camInfo.putString("camera_ip", mCameraDevice.getIp());
-            camInfo.putString("camera_devId", mCameraDevice.getDevId());
-            camInfo.putString("camera_timeZone", mCameraDevice.getTimezoneId());
-        event.putMap("cameraInfo", camInfo);
-        ReactContext reactContext = (ReactContext)getContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                getId(),
-                "onSettingsClick",
-                event);
+            WritableMap event = Arguments.createMap();
+            WritableMap camInfo = Arguments.createMap();
+                camInfo.putString("camera_ip", mCameraDevice.getIp());
+                camInfo.putString("camera_devId", mCameraDevice.getDevId());
+                camInfo.putString("camera_timeZone", mCameraDevice.getTimezoneId());
+            event.putMap("cameraInfo", camInfo);
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "onSettingsClick",
+                    event);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void onSettingsBtnClick1() {
-        // Create map for params
-        WritableMap payload = Arguments.createMap();
-        // Put data to map
-        payload.putString("devId", devId);
-        // Get EventEmitter from context and send event
-        this.reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("loadSettings", payload);
     }
 }
 
