@@ -163,21 +163,6 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCameraNightVisionStatus(ReadableMap params, final Promise promise) {
-        String devId = params.getString("devId");
-        registerCameraDevice(devId);
-
-        if (mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
-            boolean status = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
-            String result = status == true ? "On" : "Off";
-            promise.resolve(result);
-
-        } else {
-            promise.reject("-1", "Camera does not support");
-        }
-    }
-
-    @ReactMethod
     public void changeCameraNightVision(ReadableMap params, final Promise promise) {
         if(mTuyaCameraDevice != null ) {
             changeNightVision(params,promise);
@@ -238,7 +223,7 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         String indicatorStatus = "";
         if (mTuyaCameraDevice.isSupportCameraDps(DpBasicIndicator.ID)) {
             boolean status = mTuyaCameraDevice.queryBooleanCameraDps(DpBasicIndicator.ID);
-            String result = status == true ? "On" : "Off";
+            String result = status == true ? "1" : "0";
             indicatorStatus = result;
 
         } else {
@@ -267,7 +252,7 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
             mTuyaCameraDevice.registorTuyaCameraDeviceControlCallback(DpBasicIndicator.ID, new ITuyaCameraDeviceControlCallback<Boolean>() {
                 @Override
                 public void onSuccess(String s, DpNotifyModel.ACTION action, DpNotifyModel.SUB_ACTION sub_action, Boolean status) {
-                    String result = status == true ? "On" : "Off";
+                    String result = status == true ? "1" : "0";
                     promise.resolve(result);
                 }
 
