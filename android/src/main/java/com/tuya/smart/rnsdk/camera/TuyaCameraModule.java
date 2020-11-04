@@ -130,8 +130,6 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
             intent.putExtra(Constants.INTENT_PASSWD, params.getString("passwd"));
 
             reactContext.startActivity(intent);
-            // CameraLivePreviewActivity cameraLivePreviewActivity = (CameraLivePreviewActivity) reactContext.getCurrentActivity();
-            // cameraLivePreviewActivity.setOnPressSettingsCallback(onPressSettings);
 
             Log.d("ReactNative","Starting Activity");
         }
@@ -144,11 +142,11 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         registerCameraDevice(devId);
 
         WritableMap returnParams = Arguments.createMap();
-        String indicatorStatus = getIndicatorStatus(mTuyaCameraDevice);
-        String nightVisionStatus = getNightVisionStatus(mTuyaCameraDevice);
+        WritableMap camInfo = getCameraInfo(devId);
+        WritableMap camStatusInfo = getCameraStatusInfo();
 
-        returnParams.putString("indicator_status", indicatorStatus);
-        returnParams.putString("night_vision_status", nightVisionStatus);
+        returnParams.putMap("camera_info", camInfo);
+        returnParams.putMap("camera_status_info", camStatusInfo);
 
         promise.resolve(returnParams);
     }
@@ -217,6 +215,29 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
 
             }
         });
+    }
+
+    public WritableMap getCameraInfo(String devId) {
+        WritableMap camInfo = Arguments.createMap();
+        mCameraDevice =  TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
+        if(mCameraDevice != null) {
+            camInfo.putString("camera_ip", mCameraDevice.getIp());
+            camInfo.putString("camera_devId", mCameraDevice.getDevId());
+            camInfo.putString("camera_timeZone", mCameraDevice.getTimezoneId());
+        }
+        return camInfo;
+    }
+
+    public WritableMap getCameraStatusInfo() {
+        WritableMap camStatusInfo = Arguments.createMap();
+
+        String indicatorStatus = getIndicatorStatus(mTuyaCameraDevice);
+        String nightVisionStatus = getNightVisionStatus(mTuyaCameraDevice);
+
+        camStatusInfo.putString("indicator_status", indicatorStatus);
+        camStatusInfo.putString("night_vision_status", nightVisionStatus);
+
+        return camStatusInfo;
     }
 
     public String getIndicatorStatus(ITuyaCameraDevice mTuyaCameraDevice) {
