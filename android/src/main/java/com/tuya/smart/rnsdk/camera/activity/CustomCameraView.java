@@ -3,14 +3,18 @@ package com.tuya.smart.rnsdk.camera.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -108,6 +112,12 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     ReactContext reactContext;
     private OnP2PCameraListener mP2PListener = null;
     private Activity mActivity;
+    private boolean isFullScreen = false;
+    private LinearLayout mControlLayout;
+    private RelativeLayout mVideoViewContainer;
+    private int videoContainerWidth = 0;
+    private ProgressBar progressVideoView;
+
 
 
     public CustomCameraView(Context context) {
@@ -125,6 +135,8 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         View view = inflate(context, R.layout.activity_camera_live_preview,this);
         view.findViewById(R.id.camera_video_view_container);
         cameraView = view;
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        videoContainerWidth = windowManager.getDefaultDisplay().getWidth();
         mP2PListener = new OnP2PCameraListener() {
             @Override
             public void receiveFrameDataForMediaCodec(int i, byte[] bytes, int i1, int i2, byte[] bytes1, boolean b, int i3) {
@@ -152,6 +164,31 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
                 }
             }
         };
+        // Handle physical back button press
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    if(isFullScreen) {
+                        setFullScreenView();
+                        return true;
+                    } else {
+                        return false;
+                    }
+
+                } else {
+                    if(isFullScreen) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+              //  return false;
+            }
+        });
+
         initView();
         initHomeCamera();
         initData();
@@ -193,6 +230,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     }
 
     private void initView() {
+        mControlLayout = findViewById(R.id.camera_control_board);
         mVideoView = findViewById(R.id.camera_video_view);
         muteImg = findViewById(R.id.camera_mute);
         qualityTv = findViewById(R.id.camera_quality);
@@ -206,32 +244,47 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         settingTxt.setOnClickListener(this);
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
         messageCenterTxt =  findViewById(R.id.message_center_Txt);
+        mVideoViewContainer = findViewById(R.id.camera_video_view_Rl);
+        progressVideoView = findViewById(R.id.progressBarVideoView);
+        progressVideoView.setVisibility(View.VISIBLE);
 
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int width = windowManager.getDefaultDisplay().getWidth();
-        int height = width * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT;
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, height);
-        // layoutParams.addRule(RelativeLayout.BELOW, R.id.toolbar_view);
-        findViewById(R.id.camera_video_view_Rl).setLayoutParams(layoutParams);
+        setVideoViewSize(isFullScreen);
 
         muteImg.setSelected(true);
-        Log.d("TAG ", "init view --> ");
+    }
+
+    private void setVideoViewSize(boolean fullScreenMode) {
+        RelativeLayout.LayoutParams layoutParams;
+        int width = videoContainerWidth;
+        int height = 0;
+        int topPadding = 0;
+        int bottomPadding = 0;
+        if(fullScreenMode) {
+            width = LayoutParams.MATCH_PARENT;
+            height = LayoutParams.MATCH_PARENT;
+            bottomPadding = 25;
+            topPadding = 35;
+        } else {
+            height = width * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT;
+        }
+
+        layoutParams = new RelativeLayout.LayoutParams(width, height);
+        mVideoViewContainer.setLayoutParams(layoutParams);
+        mVideoViewContainer.setPadding(0,topPadding,0,bottomPadding);
+
     }
 
     public static void initHomeCamera() {
-        Log.d("TAG ", "init home camaeara --> ");
         //there is the somethings that need to set.For example the lat and lon;
         //   TuyaSdk.setLatAndLong();
         homeCamera = TuyaHomeSdk.getCameraInstance();
         if (homeCamera != null) {
-            Log.d("TAG ", "camera not null  --> ");
             homeCamera.registerCameraPushListener(mTuyaGetBeanCallback);
         }
     }
 
     private void initData() {
         try {
-            Log.d("TAG", "init data --> ");
             mCameraDevice =  TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
             Log.d("TAG", "device bean --> "+mCameraDevice);
             localKey = mCameraDevice.getLocalKey();
@@ -326,7 +379,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         mCameraP2P.createDevice(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
-
+               // progressVideoView.setVisibility(INVISIBLE);
                 Log.d("TAG", "init camera view onsuccess");
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_CREATE_DEVICE, Constants.ARG1_OPERATE_SUCCESS));
             }
@@ -571,6 +624,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     }
 
+
     @Override
     public void videoViewClick() {
 
@@ -621,16 +675,40 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     private void setFullScreenView() {
         try {
-            WritableMap event = Arguments.createMap();
+            if(isFullScreen) {
+                isFullScreen = false;
+                changeControlViewVisibility(true);
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                setVideoViewSize(isFullScreen);
+                WritableMap event = Arguments.createMap();
 
-            ReactContext reactContext = (ReactContext)getContext();
-            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                    getId(),
-                    "onFullScreenClick",
-                    event);
+                ReactContext reactContext = (ReactContext)getContext();
+                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                        getId(),
+                        "onFullScreenClick",
+                        event);
+            } else {
+                isFullScreen = true;
+                changeControlViewVisibility(false);
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                setVideoViewSize(isFullScreen);
+                WritableMap event = Arguments.createMap();
+
+                ReactContext reactContext = (ReactContext)getContext();
+                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                        getId(),
+                        "onFullScreenClick",
+                        event);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void changeControlViewVisibility(boolean show) {
+        mControlLayout.setVisibility(show ? VISIBLE : GONE);
+
     }
 
 
@@ -866,11 +944,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     public void onSettingsBtnClick() {
         try {
             WritableMap event = Arguments.createMap();
-            WritableMap camInfo = Arguments.createMap();
-                camInfo.putString("camera_ip", mCameraDevice.getIp());
-                camInfo.putString("camera_devId", mCameraDevice.getDevId());
-                camInfo.putString("camera_timeZone", mCameraDevice.getTimezoneId());
-            event.putMap("cameraInfo", camInfo);
             ReactContext reactContext = (ReactContext)getContext();
             reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                     getId(),
@@ -880,5 +953,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             e.printStackTrace();
         }
     }
+
 }
 
