@@ -135,7 +135,7 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCameraStatus(ReadableMap params, final Promise promise) {
+    public void getDetails(ReadableMap params, final Promise promise) {
 
         String devId = params.getString("devId");
         registerCameraDevice(devId);
@@ -144,8 +144,8 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         WritableMap camInfo = getCameraInfo(devId);
         WritableMap camStatusInfo = getCameraStatusInfo();
 
-        returnParams.putMap("camera_info", camInfo);
-        returnParams.putMap("camera_status_info", camStatusInfo);
+        returnParams.putMap("info", camInfo);
+        returnParams.putMap("status", camStatusInfo);
 
         promise.resolve(returnParams);
     }
@@ -220,9 +220,9 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         WritableMap camInfo = Arguments.createMap();
         mCameraDevice =  TuyaHomeSdk.getDataInstance().getDeviceBean(devId);
         if(mCameraDevice != null) {
-            camInfo.putString("camera_ip", mCameraDevice.getIp());
-            camInfo.putString("camera_devId", mCameraDevice.getDevId());
-            camInfo.putString("camera_timeZone", mCameraDevice.getTimezoneId());
+            camInfo.putString("ip", mCameraDevice.getIp());
+            camInfo.putString("devId", mCameraDevice.getDevId());
+            camInfo.putString("timeZone", mCameraDevice.getTimezoneId());
         }
         return camInfo;
     }
