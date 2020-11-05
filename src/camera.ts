@@ -39,7 +39,7 @@ export function getHomeDetails(): Promise<any> {
 // }
 
 export function getCameraDetails(params: CameraDetailsParams): Promise<any> {
-  return tuya.getCameraDetailsTest(params);
+  return tuya.getDetails(params);
 }
 
 export function changeCameraIndicatorStatus(params: CameraDetailsParams): Promise<any> {
