@@ -46,6 +46,3 @@ export function changeCameraNightVision(params: CameraNightVisionParams): Promis
   return tuya.changeCameraNightVision(params);
 }
 
-// export function changeCameraNightVision(params: CameraNightVisionParams): Promise<any> {
-//   return tuya.changeCameraNightVision(params);
-// }

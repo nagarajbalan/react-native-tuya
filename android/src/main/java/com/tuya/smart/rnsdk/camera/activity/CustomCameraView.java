@@ -675,6 +675,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             if(isFullScreen) {
                 isFullScreen = false;
                 changeControlViewVisibility(true);
+                mFullScreenImg.setImageDrawable(getResources().getDrawable(R.drawable.ic_full_screen));
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 setVideoViewSize(isFullScreen);
                 WritableMap event = Arguments.createMap();
@@ -687,6 +688,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             } else {
                 isFullScreen = true;
                 changeControlViewVisibility(false);
+                mFullScreenImg.setImageDrawable(getResources().getDrawable(R.drawable.ic_full_screen_exit));
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 setVideoViewSize(isFullScreen);
                 WritableMap event = Arguments.createMap();
@@ -948,4 +950,3 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     }
 
 }
-
