@@ -34,11 +34,7 @@ export function getHomeDetails(): Promise<any> {
   return tuya.getHomeDetails();
 }
 
-// export function getCameraDetails(params: CameraDetailsParams): Promise<any> {
-//   return tuya.getCameraDetails(params);
-// }
-
-export function getCameraDetails(params: CameraDetailsParams): Promise<any> {
+export function getDetails(params: CameraDetailsParams): Promise<any> {
   return tuya.getDetails(params);
 }
 

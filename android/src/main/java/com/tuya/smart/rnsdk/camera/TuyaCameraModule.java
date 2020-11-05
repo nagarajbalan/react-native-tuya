@@ -135,8 +135,7 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCameraDetails(ReadableMap params, final Promise promise) {
-
+    public void getDetails(ReadableMap params, final Promise promise) {
         String devId = params.getString("devId");
         registerCameraDevice(devId);
 
