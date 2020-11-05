@@ -9,7 +9,7 @@ export type CameraLivePreviewParams = {
   devId: string;
 };
 
-export type CameraStatusParams = {
+export type CameraDetailsParams = {
   devId: string;
 };
 
@@ -34,11 +34,11 @@ export function getHomeDetails(): Promise<any> {
   return tuya.getHomeDetails();
 }
 
-export function getDetails(params: CameraStatusParams): Promise<any> {
-  return tuya.getDetails(params);
+export function getCameraDetails(params: CameraDetailsParams): Promise<any> {
+  return tuya.getCameraDetails(params);
 }
 
-export function changeCameraIndicatorStatus(params: CameraStatusParams): Promise<any> {
+export function changeCameraIndicatorStatus(params: CameraDetailsParams): Promise<any> {
   return tuya.changeCameraIndicatorStatus(params);
 }
 
