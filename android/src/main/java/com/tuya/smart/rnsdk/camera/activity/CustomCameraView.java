@@ -130,7 +130,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
 
     public void init(Activity activity, Context context) {
-        Log.d("TAG ", "init  --> ");
+        Log.d("TAG ", "init  ");
         mActivity = activity;
         View view = inflate(context, R.layout.activity_camera_live_preview,this);
         view.findViewById(R.id.camera_video_view_container);
@@ -245,7 +245,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
         messageCenterTxt =  findViewById(R.id.message_center_Txt);
         mVideoViewContainer = findViewById(R.id.camera_video_view_Rl);
-        progressVideoView = findViewById(R.id.progressBarVideoView);
+        progressVideoView = findViewById(R.id.progress_bar_video_view);
         progressVideoView.setVisibility(View.VISIBLE);
 
         setVideoViewSize(isFullScreen);
@@ -351,7 +351,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     private void getApi() {
         try {
-            Log.d("TAG", "dev id --> "+devId);
+            Log.d("TAG", "dev id "+devId);
             Map postData = new HashMap();
             postData.put("devId", devId);
             mSmartCameraP2P = new TuyaSmartCameraP2P();
@@ -379,7 +379,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         mCameraP2P.createDevice(new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
-               // progressVideoView.setVisibility(INVISIBLE);
                 Log.d("TAG", "init camera view onsuccess");
                 mHandler.sendMessage(MessageUtil.getMessage(Constants.MSG_CREATE_DEVICE, Constants.ARG1_OPERATE_SUCCESS));
             }
@@ -482,17 +481,17 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     private void handleStartTalk(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-            ToastUtil.shortToast(context, "start talk success -->" + msg.obj);
+            ToastUtil.shortToast(context, "start talk success");
         } else {
-            ToastUtil.shortToast(context, "operation fail --> ");
+            ToastUtil.shortToast(context, "operation fail ");
         }
     }
 
     private void handleStopTalk(Message msg) {
         if (msg.arg1 == Constants.ARG1_OPERATE_SUCCESS) {
-            ToastUtil.shortToast(context, "stop talk success -->" + msg.obj);
+            ToastUtil.shortToast(context, "stop talk success");
         } else {
-            ToastUtil.shortToast(context, "operation fail --> ");
+            ToastUtil.shortToast(context, "operation fail");
         }
     }
 
@@ -518,7 +517,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
                 Log.d("TAG", "start preview onSuccess -->");
-
+                progressVideoView.setVisibility(View.GONE);
                 // mVideoView.onResume();
                 isPlay = true;
                 if (null != mCameraP2P){
@@ -538,7 +537,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     }
 
     private void getThumbnail() {
-        Log.d("TAG", "get thumbnail -->");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartLife/Thumbnail/";
             File file = new File(path);
@@ -573,7 +571,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     }
 
     public void setDevId (String devId) {
-        Log.d("TAG ", "Set dev id --> "+devId);
         this.devId = devId;
     }
 
@@ -863,7 +860,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
     @Override
     public void onHostResume() {
         mVideoView.onResume();
-        Log.d("TAG", "on resume -->");
         //must register again,or can't callback
         if (null != mCameraP2P) {
             AudioUtils.getModel(context);
@@ -887,7 +883,6 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     @Override
     public void onHostPause() {
-        Log.d("TAG", "on pause --------------->");
         mVideoView.onPause();
         if (isSpeaking) {
             mCameraP2P.stopAudioTalk(null);
@@ -917,14 +912,12 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
 
     @Override
     public void onHostDestroy() {
-        Log.d("TAG", "on destroy -->");
 
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.d("TAG,", "onDetachedFromWindow -->");
         if (null != mCameraP2P) {
             mCameraP2P.disconnect(new OperationDelegateCallBack() {
                 @Override

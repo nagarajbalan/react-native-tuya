@@ -70,7 +70,6 @@ public class TuyaCameraModule extends ReactContextBaseJavaModule {
         String path = null;
         try {
             path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SmartLife/Thumbnail/CameraThumbnail.png";
-            Log.d("TAG", "thumnail path -->"+path);
             WritableMap returnParams = Arguments.createMap();
             returnParams.putString("path",path);
 
