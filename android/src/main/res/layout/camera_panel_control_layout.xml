@@ -78,10 +78,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/camera_item_control_btn"
             android:drawableTop="@drawable/ic_settings"
+            android:drawablePadding="@dimen/mg_5"
+            android:padding="@dimen/mg_20"
             android:gravity="center"
             android:text="Setting"
             android:textColor="@color/camera_panel_control_color" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"/>
+
+         <TextView
+            android:id="@+id/photo_album_Txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/camera_item_control_btn"
+            android:drawableTop="@drawable/ic_album"
+            android:drawablePadding="@dimen/mg_5"
+            android:gravity="center"
+            android:padding="@dimen/mg_20"
+            android:text="Photo album"
+            android:textColor="@color/camera_panel_control_color"
+            android:textSize="@dimen/ts_13"/>
 
         <View
             android:layout_width="1dp"
@@ -103,25 +125,6 @@
             android:textSize="@dimen/ts_13"
             android:visibility="invisible"/>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"/>
-
-        <TextView
-            android:id="@+id/photo_album_Txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/camera_item_control_btn"
-            android:drawableTop="@drawable/camera_icon_playback_selector"
-            android:drawablePadding="@dimen/mg_5"
-            android:gravity="center"
-            android:padding="@dimen/mg_20"
-            android:text="Photo album"
-            android:textColor="@color/camera_panel_control_color"
-            android:textSize="@dimen/ts_13"
-            android:visibility="invisible"/>
     </LinearLayout>
 
     <LinearLayout
