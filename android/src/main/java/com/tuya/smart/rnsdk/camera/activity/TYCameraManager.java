@@ -35,8 +35,6 @@ public class TYCameraManager extends ViewGroupManager<CustomCameraView> {
         view.init(mActivity, mCallerContext);
     }
 
-
-
     @NonNull
     @Override
     protected CustomCameraView createViewInstance(@NonNull ThemedReactContext reactContext) {
@@ -48,8 +46,7 @@ public class TYCameraManager extends ViewGroupManager<CustomCameraView> {
         return MapBuilder.builder()
                 .put(
                  "onSettingsClick",
-                MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onSettingsBtnClick")))
-                .put("onFullScreenClick", MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onFullScreenBtnClick")))
+                MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onSettingsPress")))
                 .build();
     }
 }

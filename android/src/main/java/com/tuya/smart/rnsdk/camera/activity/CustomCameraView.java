@@ -678,26 +678,12 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
                 mFullScreenImg.setImageDrawable(getResources().getDrawable(R.drawable.ic_full_screen));
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 setVideoViewSize(isFullScreen);
-                WritableMap event = Arguments.createMap();
-
-                ReactContext reactContext = (ReactContext)getContext();
-                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                        getId(),
-                        "onFullScreenClick",
-                        event);
             } else {
                 isFullScreen = true;
                 changeControlViewVisibility(false);
                 mFullScreenImg.setImageDrawable(getResources().getDrawable(R.drawable.ic_full_screen_exit));
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 setVideoViewSize(isFullScreen);
-                WritableMap event = Arguments.createMap();
-
-                ReactContext reactContext = (ReactContext)getContext();
-                reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                        getId(),
-                        "onFullScreenClick",
-                        event);
             }
 
         } catch (Exception e) {
@@ -948,5 +934,4 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
             e.printStackTrace();
         }
     }
-
 }
