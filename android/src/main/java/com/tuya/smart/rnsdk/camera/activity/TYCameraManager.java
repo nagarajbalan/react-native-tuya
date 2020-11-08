@@ -42,11 +42,22 @@ public class TYCameraManager extends ViewGroupManager<CustomCameraView> {
         return new CustomCameraView(reactContext);
     }
 
-    public Map getExportedCustomBubblingEventTypeConstants() {
+        public Map getExportedCustomBubblingEventTypeConstants() {
         return MapBuilder.builder()
                 .put(
                  "onSettingsClick",
-                MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onSettingsPress")))
+                MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onControllerBtnPress")))
+                .put(
+                   "onPhotoAlbumClick",
+                MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onControllerBtnPress")))
                 .build();
     }
+
+    // public Map getExportedCustomBubblingEventTypeConstants() {
+    //     return MapBuilder.builder()
+    //             .put(
+    //              "onSettingsClick",
+    //             MapBuilder.of("phasedRegistrationNames",MapBuilder.of("bubbled", "onSettingsPress")))
+    //             .build();
+    // }
 }

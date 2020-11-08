@@ -240,7 +240,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         photoTxt = findViewById(R.id.photo_Txt);
         //replayTxt = findViewById(R.id.replay_Txt);
         settingTxt = findViewById(R.id.setting_Txt);
-        //photoAlbumTxt = findViewById(R.id.photo_album_Txt);
+        photoAlbumTxt = findViewById(R.id.photo_album_Txt);
         settingTxt.setOnClickListener(this);
         cloudStorageTxt = findViewById(R.id.cloud_Txt);
         messageCenterTxt =  findViewById(R.id.message_center_Txt);
@@ -343,7 +343,7 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         recordTxt.setOnClickListener(this);
         photoTxt.setOnClickListener(this);
        // replayTxt.setOnClickListener(this);
-       // photoAlbumTxt.setOnClickListener(this);
+        photoAlbumTxt.setOnClickListener(this);
 
         cloudStorageTxt.setOnClickListener(this);
         messageCenterTxt.setOnClickListener(this);
@@ -590,9 +590,9 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         } else if (id == R.id.photo_Txt) {
             snapShotClick();
         }
-//        else if (id == R.id.photo_album_Txt) {
-//            //
-//        }
+        else if (id == R.id.photo_album_Txt) {
+            onPhotoAlbumBtnClick();
+        }
         else if (id == R.id.setting_Txt) {
             onSettingsBtnClick();
            // callBackSettingsPress.invoke();
@@ -922,9 +922,24 @@ public class CustomCameraView extends RelativeLayout implements View.OnClickList
         TuyaSmartCameraP2PFactory.onDestroyTuyaSmartCamera();
     }
 
+    public void onPhotoAlbumBtnClick() {
+        try {
+            WritableMap event = Arguments.createMap();
+            event.putString("name", "PhotoAlbum");
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "onPhotoAlbumClick",
+                    event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onSettingsBtnClick() {
         try {
             WritableMap event = Arguments.createMap();
+            event.putString("name", "Settings");
             ReactContext reactContext = (ReactContext)getContext();
             reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                     getId(),
