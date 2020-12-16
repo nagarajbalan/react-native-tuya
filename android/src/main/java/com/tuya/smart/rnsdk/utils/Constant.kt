@@ -117,4 +117,11 @@ object Constant {
             }
         }
     }
+
+    const val ARG1_OPERATE_SUCCESS = 0
+    const val ARG1_OPERATE_FAIL = 1
+    const val MSG_DATA_DATE = 2035
+    const val MSG_DATA_DATE_BY_DAY_SUCC = 2045
+    const val MSG_DATA_DATE_BY_DAY_FAIL = 2046
+    const val MSG_MUTE = 2024
 }
