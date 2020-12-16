@@ -14,6 +14,7 @@ import com.tuya.smart.rnsdk.utils.TYRCTCommonUtil
 import com.tuya.smart.rnsdk.utils.TuyaReactUtils
 import com.tuya.smart.sdk.api.INeedLoginListener
 import com.tuya.smart.sdk.api.IRequestCallback
+import com.tuya.smart.sdk.api.IResultCallback
 import com.tuya.smart.sdk.api.ITuyaDataCallback
 import java.util.HashMap
 
