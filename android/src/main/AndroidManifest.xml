@@ -4,6 +4,9 @@
 
   <application>
     <activity android:name=".camera.activity.CameraLivePreviewActivity"></activity>
+    <activity
+      android:name=".camera.activity.CameraPlaybackActivity"
+      android:screenOrientation="portrait" />
   </application>
 
 </manifest>
