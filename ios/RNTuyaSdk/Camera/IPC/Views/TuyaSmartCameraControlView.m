@@ -56,10 +56,15 @@
         NSString *imageName = [obj objectForKey:@"image"];
         NSString *title = [obj objectForKey:@"title"];
         NSString *identifier = [obj objectForKey:@"identifier"];
+        NSURL *rtfUrl = [[NSBundle mainBundle] URLForResource:@"Resources" withExtension:@"bundle"];
+        NSBundle *imageBundle = [NSBundle bundleWithURL:rtfUrl];
+        UIImage *image = [UIImage imageNamed:imageName inBundle:imageBundle compatibleWithTraitCollection:nil];
         TuyaSmartCameraControlButton *controlButton = [TuyaSmartCameraControlButton new];
-        controlButton.imageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        controlButton.imageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
         controlButton.titleLabel.text = title;
         controlButton.identifier = identifier;
+        
         [controlButton addTarget:self action:@selector(controlAction:)];
         [self addSubview:controlButton];
     }];
