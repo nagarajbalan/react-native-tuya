@@ -56,6 +56,21 @@
     return view;
 }
 
+//This will return the image as a template ignoring the color information
++ (UIImage *)getImageFromBundleWithName: (NSString *)imageName {
+    NSURL *rtfUrl = [[NSBundle mainBundle] URLForResource:@"Resources" withExtension:@"bundle"];
+    NSBundle *imageBundle = [NSBundle bundleWithURL:rtfUrl];
+    
+    return [[UIImage imageNamed:imageName inBundle:imageBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+}
+
++ (UIImage *)getOriginalImageFromBundleWithName: (NSString *)imageName {
+    NSURL *rtfUrl = [[NSBundle mainBundle] URLForResource:@"Resources" withExtension:@"bundle"];
+    NSBundle *imageBundle = [NSBundle bundleWithURL:rtfUrl];
+    
+    return [UIImage imageNamed:imageName inBundle:imageBundle compatibleWithTraitCollection:nil];
+}
+
 + (UIImageView *)imageViewWithFrame:(CGRect)frame image:(UIImage *)image {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     imageView.image = image;

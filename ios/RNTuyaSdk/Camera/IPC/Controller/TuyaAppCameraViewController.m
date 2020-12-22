@@ -438,7 +438,7 @@
 - (UIButton *)soundButton {
     if (!_soundButton) {
         _soundButton = [[UIButton alloc] initWithFrame:CGRectMake(8, APP_TOP_BAR_HEIGHT + VideoViewHeight - 50, 44, 44)];
-        [_soundButton setImage:[UIImage imageNamed:@"ty_camera_soundOff_icon"] forState:UIControlStateNormal];
+        [_soundButton setImage:[TuyaAppViewUtil getOriginalImageFromBundleWithName:@"ty_camera_soundOff_icon"] forState:UIControlStateNormal];
     }
     return _soundButton;
 }
@@ -446,7 +446,7 @@
 - (UIButton *)hdButton {
     if (!_hdButton) {
         _hdButton = [[UIButton alloc] initWithFrame:CGRectMake(60, APP_TOP_BAR_HEIGHT + VideoViewHeight - 50, 44, 44)];
-        [_hdButton setImage:[UIImage imageNamed:@"ty_camera_control_sd_normal"] forState:UIControlStateNormal];
+        [_hdButton setImage:[TuyaAppViewUtil getOriginalImageFromBundleWithName:@"ty_camera_control_sd_normal"] forState:UIControlStateNormal];
     }
     return _hdButton;
 }
