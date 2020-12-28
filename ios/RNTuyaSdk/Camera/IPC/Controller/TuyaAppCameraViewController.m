@@ -92,9 +92,17 @@
     [self.retryButton addTarget:self action:@selector(retryAction) forControlEvents:UIControlEventTouchUpInside];
     [self.soundButton addTarget:self action:@selector(soundAction) forControlEvents:UIControlEventTouchUpInside];
     [self.hdButton addTarget:self action:@selector(hdAction) forControlEvents:UIControlEventTouchUpInside];
-    
+
+    [self hideCameraOptions];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+- (void)hideCameraOptions {
+    NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:@"OPTIONS_ARRAY"];
+    [array enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        [self.controlView disableControl:object];
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -187,6 +195,7 @@
     self.camera.videoView.frame = self.videoContainer.bounds;
     [self.camera startPreview:^{
         [self.controlView enableAllControl];
+        [self hideCameraOptions];
         [self stopLoading];
     } failure:^(NSError *error) {
         [self stopLoading];

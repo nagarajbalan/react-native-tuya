@@ -14,6 +14,13 @@
 #import "TuyaRNUtils+Network.h"
 #import "TuyaAppCameraViewController.h"
 
+#define kControlTalk        @"talk"
+#define kControlRecord      @"record"
+#define kControlPhoto       @"photo"
+#define kControlPlayback    @"playback"
+#define kControlCloud       @"Cloud"
+#define kControlMessage     @"message"
+
 @implementation TuyaCameraModule
 
 RCT_EXPORT_MODULE(TuyaCameraModule)
@@ -24,6 +31,12 @@ RCT_EXPORT_METHOD(openLivePreview:(NSDictionary *)params resolver:(RCTPromiseRes
     NSString *uid = params[@"uid"];
     NSString *passwd = params[@"passwd"];
     NSString *devId = params[@"devId"];
+    NSArray *hideCameraOptionsArray = params[@"options"];
+    
+    if(hideCameraOptionsArray != nil || [hideCameraOptionsArray count] != 0) {
+        [[NSUserDefaults standardUserDefaults] setObject:hideCameraOptionsArray forKey:@"OPTIONS_ARRAY"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 
     [[TuyaSmartUser sharedInstance] loginByEmail:countryCode email:uid password:passwd success:^{
         [TuyaSmartDevice syncDeviceInfoWithDevId:devId homeId:nil success:^{
