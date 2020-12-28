@@ -32,6 +32,9 @@
 
 + (UIImageView *)rightArrowImageView:(CGRect)frame;
 
++ (UIImage *)getImageFromBundleWithName: (NSString *)imageName;
++ (UIImage *)getOriginalImageFromBundleWithName: (NSString *)imageName;
+
 #pragma mark - UItextField
 
 + (UITextField *)textFieldWithFrame:(CGRect)frame fontSize:(int)fontSize color:(UIColor *)color;

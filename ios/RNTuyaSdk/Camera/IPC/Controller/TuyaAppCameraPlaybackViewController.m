@@ -370,11 +370,13 @@ TuyaTimelineViewDelegate>
 }
 
 - (void)camera:(TuyaSmartCamera *)camera didReceiveMuteState:(BOOL)isMuted {
+    
     NSString *imageName = @"ty_camera_soundOn_icon";
     if (isMuted) {
         imageName = @"ty_camera_soundOff_icon";
     }
-    [self.soundButton setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+    
+    [self.soundButton setImage:[TuyaAppViewUtil getImageFromBundleWithName:imageName] forState:UIControlStateNormal];
 }
 
 - (void)camera:(TuyaSmartCamera *)camera didReceiveVideoFrame:(CMSampleBufferRef)sampleBuffer frameInfo:(TuyaSmartVideoFrameInfo)frameInfo {
@@ -400,7 +402,7 @@ TuyaTimelineViewDelegate>
 - (UIButton *)soundButton {
     if (!_soundButton) {
         _soundButton = [[UIButton alloc] initWithFrame:CGRectMake(8, APP_TOP_BAR_HEIGHT + VideoViewHeight - 50, 44, 44)];
-        [_soundButton setImage:[UIImage imageNamed:@"ty_camera_soundOff_icon"] forState:UIControlStateNormal];
+        [_soundButton setImage:[TuyaAppViewUtil getOriginalImageFromBundleWithName:@"ty_camera_soundOff_icon"] forState:UIControlStateNormal];
     }
     return _soundButton;
 }
@@ -449,8 +451,7 @@ TuyaTimelineViewDelegate>
 - (UIButton *)photoButton {
     if (!_photoButton) {
         _photoButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-        UIImage *image = [[UIImage imageNamed:@"ty_camera_photo_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_photoButton setImage:image forState:UIControlStateNormal];
+        [_photoButton setImage:[TuyaAppViewUtil getImageFromBundleWithName:@"ty_camera_photo_icon"] forState:UIControlStateNormal];
         [_photoButton setTintColor:[UIColor blackColor]];
     }
     return _photoButton;
@@ -459,8 +460,7 @@ TuyaTimelineViewDelegate>
 - (UIButton *)recordButton {
     if (!_recordButton) {
         _recordButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-        UIImage *image = [[UIImage imageNamed:@"ty_camera_rec_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_recordButton setImage:image forState:UIControlStateNormal];
+        [_recordButton setImage:[TuyaAppViewUtil getImageFromBundleWithName:@"ty_camera_rec_icon"] forState:UIControlStateNormal];
         [_recordButton setTintColor:[UIColor blackColor]];
     }
     return _recordButton;
@@ -469,8 +469,7 @@ TuyaTimelineViewDelegate>
 - (UIButton *)pauseButton {
     if (!_pauseButton) {
         _pauseButton = [[UIButton alloc] init];
-        UIImage *image = [[UIImage imageNamed:@"ty_camera_tool_pause_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_pauseButton setImage:image forState:UIControlStateNormal];
+        [_pauseButton setImage:[TuyaAppViewUtil getImageFromBundleWithName:@"ty_camera_tool_pause_normal"] forState:UIControlStateNormal];
         [_pauseButton setTintColor:[UIColor blackColor]];
     }
     return _pauseButton;

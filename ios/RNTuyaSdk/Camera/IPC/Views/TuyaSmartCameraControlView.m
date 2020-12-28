@@ -7,6 +7,7 @@
 
 #import "TuyaSmartCameraControlView.h"
 #import "TuyaSmartCameraControlButton.h"
+#import "TuyaAppViewUtil.h"
 
 @interface TuyaSmartCameraControlView ()
 
@@ -53,13 +54,15 @@
 - (void)setSourceData:(NSArray *)sourceData {
     [self removeAllSubviews];
     [sourceData enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
-        NSString *imageName = [obj objectForKey:@"image"];
         NSString *title = [obj objectForKey:@"title"];
         NSString *identifier = [obj objectForKey:@"identifier"];
+        
         TuyaSmartCameraControlButton *controlButton = [TuyaSmartCameraControlButton new];
-        controlButton.imageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        controlButton.imageView.image = [TuyaAppViewUtil getImageFromBundleWithName:[obj objectForKey:@"image"]];
+
         controlButton.titleLabel.text = title;
         controlButton.identifier = identifier;
+        
         [controlButton addTarget:self action:@selector(controlAction:)];
         [self addSubview:controlButton];
     }];
