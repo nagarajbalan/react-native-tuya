@@ -7,6 +7,7 @@ export type CameraLivePreviewParams = {
   uid: string;
   passwd: string;
   devId: string;
+  options: [string];
 };
 
 export function openCameraLivePreview(params: CameraLivePreviewParams): Promise<string> {
