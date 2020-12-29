@@ -14,6 +14,7 @@
 #import "TuyaAppProgressUtils.h"
 #import "TuyaAppCameraTimeLineModel.h"
 #import <YYModel/YYModel.h>
+#import "TuyaAppCameraRecordListView.h"
 
 #define VideoViewWidth [UIScreen mainScreen].bounds.size.width
 #define VideoViewHeight ([UIScreen mainScreen].bounds.size.width / 16 * 9)
@@ -25,7 +26,8 @@
 TuyaSmartCameraObserver,
 TYCameraCalendarViewDelegate,
 TYCameraCalendarViewDataSource,
-TuyaTimelineViewDelegate>
+TuyaTimelineViewDelegate,
+TYCameraRecordListViewDelegate>
 
 @property (nonatomic, strong) UIView *videoContainer;
 
@@ -53,6 +55,10 @@ TuyaTimelineViewDelegate>
 
 @property (nonatomic, strong) TuyaTimelineView *timeLineView;
 
+@property (nonatomic, strong) TuyaAppCameraRecordListView *timeLineListView;
+
+
+
 @property (nonatomic, strong) NSArray *timeLineModels;
 
 @property (nonatomic, assign) NSInteger playTime;
@@ -71,6 +77,7 @@ TuyaTimelineViewDelegate>
     [self.view addSubview:self.stateLabel];
     [self.view addSubview:self.retryButton];
     [self.view addSubview:self.timeLineView];
+    [self.view addSubview:self.timeLineListView];
     [self.view addSubview:self.soundButton];
     [self.view addSubview:self.calendarView];
     [self.view addSubview:self.controlBar];
@@ -146,6 +153,8 @@ TuyaTimelineViewDelegate>
         if (result.count > 0) {
             weakSelf.timeLineModels = [NSArray yy_modelArrayWithClass:[TuyaAppCameraTimeLineModel class] json:result];
             weakSelf.timeLineView.sourceModels = weakSelf.timeLineModels;
+            weakSelf.timeLineListView.dataSource = weakSelf.timeLineModels;
+            [weakSelf.timeLineListView.tableView reloadData];
             [weakSelf.timeLineView setCurrentTime:0 animated:YES];
         }else {
             [weakSelf stopLoadingWithText:NSLocalizedString(@"ipc_playback_no_records_today", @"")];
@@ -495,6 +504,7 @@ TuyaTimelineViewDelegate>
     return _controlBar;
 }
 
+
 - (TuyaTimelineView *)timeLineView {
     if (!_timeLineView) {
         _timeLineView = [[TuyaTimelineView alloc] initWithFrame:CGRectMake(0, self.videoContainer.bottom, [UIScreen mainScreen].bounds.size.width, 150)];
@@ -513,6 +523,50 @@ TuyaTimelineViewDelegate>
     }
     return _timeLineView;
 }
+
+
+
+- (TuyaAppCameraRecordListView *)timeLineListView {
+    if (!_timeLineListView) {
+        _timeLineListView = [[TuyaAppCameraRecordListView alloc] initWithFrame:CGRectMake(0, self.videoContainer.bottom, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - self.videoContainer.bottom)];
+        _timeLineListView.delegate = self;
+        _timeLineListView.backgroundColor = HEXCOLOR(0xf5f5f5);
+    }
+    return _timeLineListView;
+}
+
+- (void)cameraRecordListView:(TuyaAppCameraRecordListView *)listView didSelectedRecord:(NSDictionary *)timeslice {
+    if (timeslice) {
+        TuyaAppCameraTimeLineModel *model = (TuyaAppCameraTimeLineModel*)timeslice;
+        [self playbackWithTime:model.startTime timeLineModel:model];
+    }
+}
+
+- (void)cameraRecordListView:(TuyaAppCameraRecordListView *)listView presentCell:(TuyaAppCameraRecordCell *)cell source:(id)source {
+    TuyaAppCameraTimeLineModel *model = source;
+    cell.startTimeLabel.adjustsFontSizeToFitWidth = TRUE;
+    cell.startTimeLabel.text =  [self getStringByDate: model.startDate];
+    cell.startTimeLabel.font = [UIFont systemFontOfSize:16];
+    cell.durationLabel.adjustsFontSizeToFitWidth = TRUE;
+    cell.durationLabel.text = [self duration:model.startDate endDate:model.stopDate];
+    cell.durationLabel.font = [UIFont systemFontOfSize:12];
+    cell.durationLabel.textColor = [UIColor grayColor];
+}
+
+- (NSString *)duration:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    NSCalendarUnit units = NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:units fromDate: startDate toDate: endDate options: 0];
+    return [NSString stringWithFormat:@"%ti H | %ti M | %ti S", [components hour], [components minute], [components second]];
+}
+
+- (NSString *)getStringByDate:(NSDate *)date {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm a"];
+    NSString *stringFromDate = [formatter stringFromDate:date];
+    return stringFromDate;
+}
+
 
 
 - (TYCameraTimeLabel *)timeLineLabel {
